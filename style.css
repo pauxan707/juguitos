@@ -1,0 +1,48 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #ffedc3; /* cremita */
+    margin: 0;
+    padding: 0;
+    color: #975a16; /* marrón */
+  }
+  
+  header {
+    background-color: #95a756; /* verde */
+    padding: 20px;
+    text-align: center;
+    color: white;
+  }
+  
+  main {
+    padding: 20px;
+    background-color: #fdb6ba; /* rosado */
+  }
+  
+  .buscador {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  input, button {
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  button {
+    background-color: #95a756;
+    color: white;
+    cursor: pointer;
+  }
+  
+  footer {
+    background-color: #975a16;
+    color: white;
+    text-align: center;
+    padding: 10px;
+  }
+  
+  

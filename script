@@ -1,0 +1,15 @@
+function buscarBebida() {
+  const nombre = document.getElementById('nombreBebida').value.trim();
+  const resultado = document.getElementById('resultado');
+
+  if (nombre.toLowerCase() === "jugo ades") {
+    resultado.innerHTML = `
+      <h2>Jugo ADES</h2>
+      <p>Contiene aproximadamente 6 cucharaditas de azúcar por porción.</p>
+    `;
+  } else {
+    resultado.innerHTML = `
+      <p>No encontramos esta bebida en la base de datos. Podés ingresar los datos manualmente.</p>
+    `;
+  }
+}
