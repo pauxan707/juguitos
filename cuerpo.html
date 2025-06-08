@@ -4,27 +4,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>El Lado Amargo de las Bebidas Dulces</title>
+
+  <!--  link al archivo style.css -->
   <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
+
   <header>
-    <h1>Scan and Sip</h1>
+    <div>Scan & Sip</div>
+    <div><button class="button">Sign In</button></div>
   </header>
 
-  <main>
-    <section class="buscador">
-      <p>Ingresá el nombre de la bebida para saber más:</p>
-      <input type="text" id="nombreBebida" placeholder="Ej: Jugo ADES">
-      <button onclick="buscarBebida()">Buscar</button>
-    </section>
-    <section id="resultado"></section>
-  </main>
+  <section class="main">
+    <h1>Escaneá, <br> descubrí <br> y elegí mejor</h1>
+    <input type="text" id="barcodeInput" placeholder="Ingresa el código de barras de la bebida">
+    <button class="button-compare" onclick="compareDrink()">Comparar</button>
+</section>
 
-  <footer>
-    <p>Hecho por grupo 3</p>
-  </footer>
+  <section class="result" id="resultSection" style="display:none;">
+    <h2 id="drinkName">Nombre de la bebida</h2>
+    <img src="" id="drinkPhoto" alt="Foto del producto" style="width:100px;height:100px;">
+    <p id="sugarInfo">Contiene aproximadamente X cucharas de azúcar.</p>
+    <div>
+      <h3>Detalles de la bebida</h3>
+      <p id="nutritionDetails">Información nutricional...</p>
+    </div>
+  </section>
 
-  <script src="script.js"></script>
+
+  <section class="achievements">
+    <h2>LOGROS</h2>
+    <div class="profile">
+      <p>Perfil</p>
+      <p>Edad: <span id="userAge">---</span></p>
+      <p>Hábitos: <span id="userHabits">---</span></p>
+    </div>
+  </section>
+
+  
+  </script>
+<script src="script.js"></script>
 </body>
 </html>
 

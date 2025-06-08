@@ -1,15 +1,18 @@
-function buscarBebida() {
-  const nombre = document.getElementById('nombreBebida').value.trim();
-  const resultado = document.getElementById('resultado');
+function compareDrink() {
+        const barcode = document.getElementById('barcodeInput').value;
+        
+        // Simulación de búsqueda de datos:
+        if (barcode === "123456") {
+            document.getElementById('drinkName').innerText = "Jugo Ades";
+            document.getElementById('drinkPhoto').src = "https://via.placeholder.com/100";
+            document.getElementById('sugarInfo').innerText = "Contiene aproximadamente 5 cucharas de azúcar.";
+            document.getElementById('nutritionDetails').innerText = "150 kcal por porción, 35g de azúcar.";
+        } else {
+            document.getElementById('drinkName').innerText = "Producto desconocido";
+            document.getElementById('drinkPhoto').src = "https://via.placeholder.com/100";
+            document.getElementById('sugarInfo').innerText = "Información no disponible.";
+            document.getElementById('nutritionDetails').innerText = "Por favor ingresa los datos manualmente.";
+        }
 
-  if (nombre.toLowerCase() === "jugo ades") {
-    resultado.innerHTML = `
-      <h2>Jugo ADES</h2>
-      <p>Contiene aproximadamente 6 cucharaditas de azúcar por porción.</p>
-    `;
-  } else {
-    resultado.innerHTML = `
-      <p>No encontramos esta bebida en la base de datos. Podés ingresar los datos manualmente.</p>
-    `;
-  }
-}
+        document.getElementById('resultSection').style.display = "block";
+    }

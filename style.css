@@ -1,48 +1,100 @@
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #ffedc3; /* cremita */
+    font-family: Arial, sans-serif;
+    background-color: #ffedc3;
     margin: 0;
-    padding: 0;
-    color: #975a16; /* marrón */
-  }
-  
-  header {
-    background-color: #95a756; /* verde */
     padding: 20px;
-    text-align: center;
-    color: white;
-  }
-  
-  main {
-    padding: 20px;
-    background-color: #fdb6ba; /* rosado */
-  }
-  
-  .buscador {
-    background-color: white;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-  }
-  
-  input, button {
-    padding: 10px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 5px;
-  }
-  
-  button {
+}
+
+/* Header styling */
+header {
     background-color: #95a756;
     color: white;
-    cursor: pointer;
-  }
-  
-  footer {
-    background-color: #975a16;
-    color: white;
-    text-align: center;
     padding: 10px;
-  }
-  
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid #95a756;
+    border-radius: 12px;
+    margin: 10px;
+}
+
+header div:first-child {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    letter-spacing: 1px;
+}
+
+header .button {
+    background-color: #fdbbba;
+    color: white;
+    border: 2px solid #fdbbba;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+header .button:hover {
+    background-color: #e79796;
+}
+
+/* Scanner section styling */
+.button-compare{
+    background-color:#95a756;
+    border: 2px solid #388E3C;
+    border-radius: 12px;
+    padding: 20px;
+    width: 80%;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    margin-right: auto;
+    display: block;
+}
+
+.main h1 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #58350d;
+    text-align: left;
+    margin: 0 0 30px 0;
+    
+}
+
+.main input[type="text"] {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #e94444;
+    border-radius: 8px;
+    outline: none;
+    font-family: Arial, sans-serif;
+    margin: 0 auto 15px auto;
+    display: block;
+}
+
+.main .button:hover {
+    background-color: #388E3C;
+}
+
+h1 {
+    font-size: 24px;
+    margin: 20px 0;
+}
+
+.scanner, .result, .profile, .achievements {
+    background-color: #fff8dc;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+}
+
+
   
