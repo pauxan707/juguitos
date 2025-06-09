@@ -48,14 +48,19 @@ header .button:hover {
     border: 2px solid #388E3C;
     border-radius: 12px;
     padding: 20px;
-    width: 80%;
-    min-height: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     font-family: Arial, sans-serif;
-    margin-right: auto;
-    display: block;
+    /* margin-right: auto;
+    display: block; */
+}
+ 
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .main h1 {
@@ -63,8 +68,8 @@ header .button:hover {
     font-weight: bold;
     color: #58350d;
     text-align: left;
-    margin: 0 0 30px 0;
-    
+    margin-right: auto;
+    margin-left: 30px;
 }
 
 .main input[type="text"] {
