@@ -1,18 +1,3 @@
-function compareDrink() {
-        const barcode = document.getElementById('barcodeInput').value;
-        
-        // Simulación de búsqueda de datos:
-        if (barcode === "123456") {
-            document.getElementById('drinkName').innerText = "Jugo Ades";
-            document.getElementById('drinkPhoto').src = "https://via.placeholder.com/100";
-            document.getElementById('sugarInfo').innerText = "Contiene aproximadamente 5 cucharas de azúcar.";
-            document.getElementById('nutritionDetails').innerText = "150 kcal por porción, 35g de azúcar.";
-        } else {
-            document.getElementById('drinkName').innerText = "Producto desconocido";
-            document.getElementById('drinkPhoto').src = "https://via.placeholder.com/100";
-            document.getElementById('sugarInfo').innerText = "Información no disponible.";
-            document.getElementById('nutritionDetails').innerText = "Por favor ingresa los datos manualmente.";
-        }
-
-        document.getElementById('resultSection').style.display = "block";
-    }
+document.getElementById("logroslink").addEventListener("click", () => {
+    resultElement.style.display = "block";
+});

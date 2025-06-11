@@ -4,13 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>El Lado Amargo de las Bebidas Dulces</title>
-
-  <!--  link al archivo style.css -->
   <link rel="stylesheet" href="style.css">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-
   <header>
     <div>Scan & Sip</div>
     <div><button class="button">Sign In</button></div>
@@ -20,7 +17,7 @@
     <h1>Escaneá, <br> descubrí <br> y elegí mejor</h1>
     <input type="text" id="barcodeInput" placeholder="Ingresa el código de barras de la bebida">
     <button class="button-compare" onclick="compareDrink()">Comparar</button>
-</section>
+  </section>
 
   <section class="result" id="resultSection" style="display:none;">
     <h2 id="drinkName">Nombre de la bebida</h2>
@@ -32,8 +29,15 @@
     </div>
   </section>
 
+  <nav>
+    <ul>
+      <li><a href="#biblio">Biblioteca</a></li>
+      <li><a href="#comparador">Comparador y rankings</a></li>
+      <li><a href="#logroslink">Logros</a></li> 
+    </ul>
+  </nav>
 
-  <section class="achievements">
+  <section id="logroslink">
     <h2>LOGROS</h2>
     <div class="profile">
       <p>Perfil</p>
@@ -42,9 +46,6 @@
     </div>
   </section>
 
-  
-  </script>
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
-

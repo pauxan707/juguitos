@@ -7,7 +7,7 @@ body {
 
 /* Header styling */
 header {
-    background-color: #95a756;
+    background-color: #b0ce41;
     color: white;
     padding: 10px;
     display: flex;
@@ -45,7 +45,7 @@ header .button:hover {
 /* Scanner section styling */
 .button-compare{
     background-color:#95a756;
-    border: 2px solid #388E3C;
+    border: 2px solid #95a756;
     border-radius: 12px;
     padding: 20px;
     display: flex;
@@ -93,13 +93,29 @@ h1 {
     margin: 20px 0;
 }
 
-.scanner, .result, .profile, .achievements {
-    background-color: #fff8dc;
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 8px;
+.hidden {
+    display: none;
 }
 
+#logroslink {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    display: none;
+}
 
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav li a {
+    text-decoration: none;
+    color: blue;
+    font-weight: bold;
+    cursor: pointer;
+}
   
