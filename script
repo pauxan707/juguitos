@@ -1,3 +1,0 @@
-document.getElementById("logroslink").addEventListener("click", () => {
-    resultElement.style.display = "block";
-});
