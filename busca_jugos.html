@@ -403,7 +403,7 @@
             document.getElementById('resultadoContainer').style.display = 'block';
 
             // Leer archivo JSON con los jugos
-            fetch("data/jugos.json")
+            fetch("./data/jugos.json")
                 .then(res => {
                     if (!res.ok) {
                         throw new Error(`HTTP error! status: ${res.status}`);
