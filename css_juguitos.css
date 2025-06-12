@@ -1,6 +1,7 @@
 :root {
-  --verde: #9ca257;
+  --verde: #b0ce41;
   --rosa: #fcb4ba;
+  --rosa-oscuro: #f79da4;
   --beige: #ffedc3;
   --marron: #9f5234;
   --negro: #000;
@@ -13,8 +14,53 @@ body {
   background-color: var(--beige);
 }
 
+header {
+    background-color: var(--verde);
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid var(--verde);
+}
+
+header div:first-child {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    letter-spacing: 1px;
+}
+
+header .button {
+    background-color: var(--rosa);
+    color: white;
+    border: 2px solid var(--rosa-oscuro);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+header .button:hover {
+    background-color: var(--rosa-oscuro);
+}
+
+.input-codigo [type="text"] {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid var(--rosa);
+    border-radius: 8px;
+    outline: none;
+    font-family: Arial, sans-serif;
+    margin: 0 auto 15px auto;
+}
+
 .top-bar {
-  background-color: var(--verde);
+  background-color: var(--rosa);
   color: var(--negro);
   display: flex;
   justify-content: space-between;
@@ -23,32 +69,32 @@ body {
   border-bottom: 2px solid var(--negro);
 }
 
-.hero {
+.textoprincipal {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--verde);
+  background-color: var(--rosa);
   padding: 2rem;
   flex-wrap: wrap;
 }
 
-.hero-text {
+.textoprincipal-text {
   max-width: 50%;
   color: var(--negro);
 }
 
-.hero-text h1 {
+.textoprincipal-text h1 {
   font-size: 2.5rem;
   margin: 0;
   line-height: 1.2;
 }
 
-.hero-text p {
+.textoprincipal-text p {
   margin: 1rem 0;
   font-size: 1rem;
 }
 
-.hero-text button {
+.textoprincipal-text button {
   background-color: var(--negro);
   color: var(--blanco);
   padding: 0.75rem 1.5rem;
@@ -58,12 +104,12 @@ body {
   font-weight: bold;
 }
 
-.hero-image img {
+.textoprincipal-image img {
   max-width: 250px;
   border-radius: 1rem;
 }
 
-.features {
+.accesorios {
   display: flex;
   justify-content: space-around;
   padding: 2rem 1rem;
@@ -71,16 +117,27 @@ body {
   flex-wrap: wrap;
 }
 
-.card {
+.lista {
   background-color: var(--blanco);
   border: 2px solid var(--negro);
   border-radius: 1rem;
-  width: 250px;
-  height: 250px;
+  padding: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   font-size: 1.5rem;
   margin: 1rem;
+}
+
+.seccion {
+  display: none;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.seccion.activa {
+  display: block;
 }

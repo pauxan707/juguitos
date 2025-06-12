@@ -4,29 +4,53 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Scan & Sip</title>
-  <link rel="stylesheet" href="preubacss.css" />
+  <link rel="stylesheet" href="css_juguitos.css" />
 </head>
 <body>
-  <header class="top-bar">
-    <span>Scan & Sip</span>
-    <span>Sign in</span>
+  <header>
+    <div>Scan & Sip</div>
+    <div><button class="button">Sign In</button></div>
   </header>
 
-  <section class="hero">
-    <div class="hero-text">
+  <section class="textoprincipal">
+    <div class="textoprincipal-text">
       <h1>ESCANEÁ,<br>DESCUBRÍ<br>Y ELEGÍ MEJOR</h1>
       <p>Accede aquí para escanear tu producto y descubrir su información nutricional</p>
+      <input type="text" id="codigo" placeholder="Ingresa el código de barras de la bebida">
       <button>ESCANEÁ AQUÍ</button>
     </div>
-    <div class="hero-image">
+    <div class="textoprincipal-image">
       <img src="jugos.png" alt="Jugos en caja">
     </div>
   </section>
 
-  <section class="features">
-    <div class="card">BIBLIOTECA</div>
-    <div class="card">COMPARADOR</div>
-    <div class="card">LOGROS</div>
+  <section class="accesorios">
+    <div class="lista" onclick="mostrarSeccion('biblioteca')">BIBLIOTECA</div>
+    <div class="lista" onclick="mostrarSeccion('comparador')">COMPARADOR</div>
+    <div class="lista" onclick="mostrarSeccion('logros')">LOGROS</div>
   </section>
+
+  <!-- SECCIONES OCULTAS/MOSTRADAS -->
+  <section id="biblioteca" class="seccion">
+    <h2>BIBLIOTECA</h2>
+    <p>Contenido exclusivo de la biblioteca.</p>
+    <ul>
+      <li>Libro 1: cjxkcjx</li>
+      <li>Libro 2: cnxjxkm</li>
+      <li>Libro 3:cmmmx</li>
+    </ul>
+  </section>
+
+  <section id="comparador" class="seccion">
+    <h2>COMPARADOR</h2>
+    <p>Contenido exclusivo del comparador.</p>
+  </section>
+
+  <section id="logros" class="seccion">
+    <h2>LOGROS</h2>
+    <p>Contenido exclusivo de logros.</p>
+  </section>
+
+  <script src="javas.js"></script>
 </body>
 </html>
