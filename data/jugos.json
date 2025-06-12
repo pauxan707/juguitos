@@ -1,0 +1,152 @@
+[
+  {
+    "codigo": "7790030330012",
+    "nombre": "Jugo de Naranja",
+    "marca": "Cepita del Valle",
+    "azucar": "21g por 200ml",
+    "calorias": "86 kcal por 200ml",
+    "volumen": "1L",
+    "tipo": "Jugo concentrado",
+    "ingredientes": "Agua, jugo de naranja concentrado, vitamina C"
+  },
+  {
+    "codigo": "7791234567890",
+    "nombre": "Jugo de Manzana",
+    "marca": "Cepita del Valle", 
+    "azucar": "18g por 200ml",
+    "calorias": "76 kcal por 200ml",
+    "volumen": "1L",
+    "tipo": "Jugo concentrado",
+    "ingredientes": "Agua, jugo de manzana, vitamina B3, vitamina B6"
+  },
+  {
+    "codigo": "7790567890123",
+    "nombre": "Jugo de Naranja 100% Natural",
+    "marca": "Big C",
+    "azucar": "24g por 200ml",
+    "calorias": "95 kcal por 200ml",
+    "volumen": "500ml",
+    "tipo": "Jugo 100% natural",
+    "ingredientes": "Jugo de naranja 100% natural"
+  },
+  {
+    "codigo": "7791111222333",
+    "nombre": "Jugo de Durazno",
+    "marca": "Big C",
+    "azucar": "26g por 200ml",
+    "calorias": "102 kcal por 200ml",
+    "volumen": "1L",
+    "tipo": "Néctar de fruta",
+    "ingredientes": "Agua, pulpa de durazno, azúcar, ácido cítrico"
+  },
+  {
+    "codigo": "7792345678901",
+    "nombre": "Jugo de Manzana Sin Azúcar",
+    "marca": "Natural Tree",
+    "azucar": "0g por 200ml",
+    "calorias": "35 kcal por 200ml",
+    "volumen": "1L",
+    "tipo": "Jugo 100% natural sin azúcar añadida",
+    "ingredientes": "Jugo de manzana 100% natural"
+  },
+  {
+    "codigo": "7793456789012",
+    "nombre": "Jugo de Naranja",
+    "marca": "Natural Tree",
+    "azucar": "20g por 200ml",
+    "calorias": "82 kcal por 200ml",
+    "volumen": "1L",
+    "tipo": "Jugo 100% natural",
+    "ingredientes": "Jugo de naranja 100% natural, vitamina C"
+  },
+  {
+    "codigo": "7794567890123",
+    "nombre": "Néctar de Pera",
+    "marca": "La Campagnola",
+    "azucar": "22g por 200ml",
+    "calorias": "88 kcal por 200ml",
+    "volumen": "1L",
+    "tipo": "Néctar de fruta",
+    "ingredientes": "Agua, pulpa de pera, azúcar, ácido cítrico, vitamina C"
+  },
+  {
+    "codigo": "7795678901234",
+    "nombre": "Jugo de Mango",
+    "marca": "Jumex",
+    "azucar": "28g por 200ml",
+    "calorias": "110 kcal por 200ml",
+    "volumen": "500ml",
+    "tipo": "Néctar de fruta",
+    "ingredientes": "Agua, pulpa de mango, azúcar, ácido málico"
+  },
+  {
+    "codigo": "7796789012345",
+    "nombre": "Jugo de Uva",
+    "marca": "Conaprole",
+    "azucar": "32g por 200ml",
+    "calorias": "125 kcal por 200ml",
+    "volumen": "1L",
+    "tipo": "Jugo de uva",
+    "ingredientes": "Jugo de uva concentrado, agua, ácido tartárico"
+  },
+  {
+    "codigo": "7797890123456",
+    "nombre": "Jugo Multivitamínico",
+    "marca": "Saman",
+    "azucar": "19g por 200ml",
+    "calorias": "78 kcal por 200ml",
+    "volumen": "1L",
+    "tipo": "Jugo con vitaminas",
+    "ingredientes": "Agua, jugos concentrados mixtos, vitaminas A, C, E"
+  },
+  {
+    "codigo": "7798901234567",
+    "nombre": "Jugo de Pomelo Rosado",
+    "marca": "Citric",
+    "azucar": "16g por 200ml",
+    "calorias": "68 kcal por 200ml",
+    "volumen": "1L",
+    "tipo": "Jugo cítrico",
+    "ingredientes": "Jugo de pomelo rosado, agua, ácido cítrico"
+  },
+  {
+    "codigo": "7799012345678",
+    "nombre": "Jugo de Ananá",
+    "marca": "Del Monte",
+    "azucar": "25g por 200ml",
+    "calorias": "98 kcal por 200ml",
+    "volumen": "1L",
+    "tipo": "Jugo tropical",
+    "ingredientes": "Jugo de ananá concentrado, agua, ácido cítrico"
+  },
+  {
+    "codigo": "7790123456789",
+    "nombre": "Jugo Light de Naranja",
+    "marca": "Cepita del Valle",
+    "azucar": "5g por 200ml",
+    "calorias": "25 kcal por 200ml",
+    "volumen": "1L",
+    "tipo": "Jugo light",
+    "ingredientes": "Agua, jugo de naranja, edulcorantes (sucralosa, acesulfame K)"
+  },
+  {
+    "codigo": "7791357924680",
+    "nombre": "Néctar de Frutilla",
+    "marca": "Arcor",
+    "azucar": "27g por 200ml",
+    "calorias": "105 kcal por 200ml",
+    "volumen": "1L",
+    "tipo": "Néctar de fruta",
+    "ingredientes": "Agua, pulpa de frutilla, azúcar, ácido cítrico, colorante natural"
+  },
+  {
+    "codigo": "7792468135790",
+    "nombre": "Jugo de Limón",
+    "marca": "Citrícola Salteña",
+    "azucar": "14g por 200ml",
+    "calorias": "58 kcal por 200ml",
+    "volumen": "500ml",
+    "tipo": "Jugo cítrico concentrado",
+    "ingredientes": "Jugo de limón concentrado, agua, azúcar"
+  }
+]

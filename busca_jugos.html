@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de Jugos - Información Nutricional</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .search-section {
+            padding: 30px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-volver {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .btn-escanear {
+            background: linear-gradient(45deg, #007bff, #6f42c1);
+        }
+
+        .resultado-container {
+            padding: 30px;
+            display: none;
+        }
+
+        .producto-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+        }
+
+        .producto-titulo {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .producto-marca {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        .nutricional-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nutricional-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .nutricional-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .nutricional-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .valor-grande {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .cucharadas {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 2px solid #ffc107;
+        }
+
+        .cucharadas h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .recomendacion {
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .recomendacion.buena {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .recomendacion.moderada {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+
+        .recomendacion.alta {
+            background: linear-gradient(135deg, #f8d7da, #f1b0b7);
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .dato-oms {
+            background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .ingredientes {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .ingredientes h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .botones {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .nutricional-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🥤 Escáner de Jugos</h1>
+            <p>Conoce la información nutricional de tu jugo favorito</p>
+        </div>
+
+        <!-- Sección de búsqueda -->
+        <div class="search-section" id="searchSection">
+            <h2>Ingresa el código del producto</h2>
+            <div class="input-group">
+                <input type="text" id="codigo" placeholder="Ej: 001, ABC123, etc." onkeypress="if(event.key==='Enter') buscarJugo()">
+            </div>
+            <button onclick="buscarJugo()" class="btn">🔍 ESCANEÁ AQUÍ</button>
+        </div>
+
+        <!-- Sección de resultados -->
+        <div class="resultado-container" id="resultadoContainer">
+            <div class="producto-header">
+                <div class="producto-titulo" id="nombre">Cargando...</div>
+                <div class="producto-marca" id="marca"></div>
+            </div>
+
+            <div class="nutricional-grid">
+                <div class="nutricional-card">
+                    <h3>🍬 Azúcar</h3>
+                    <div class="valor-grande" id="azucar">-</div>
+                </div>
+                <div class="nutricional-card">
+                    <h3>🔥 Calorías</h3>
+                    <div class="valor-grande" id="calorias">-</div>
+                </div>
+                <div class="nutricional-card">
+                    <h3>📏 Volumen</h3>
+                    <div class="valor-grande" id="volumen">-</div>
+                </div>
+                <div class="nutricional-card">
+                    <h3>🥤 Tipo</h3>
+                    <div class="valor-grande" id="tipo" style="font-size: 1.2em;">-</div>
+                </div>
+            </div>
+
+            <div class="cucharadas">
+                <h3>🥄 Equivalencia en Azúcar</h3>
+                <div class="valor-grande" id="cucharadas">- cucharadas</div>
+            </div>
+
+            <div class="recomendacion" id="recomendacion">
+                Evaluando producto...
+            </div>
+
+            <div class="dato-oms">
+                <strong>💡 Dato importante:</strong> La OMS recomienda máximo 25g de azúcar añadida por día (equivale a 6 cucharadas)
+            </div>
+
+            <div class="ingredientes">
+                <h3>🔍 Ingredientes:</h3>
+                <p id="ingredientes">-</p>
+            </div>
+
+            <div class="botones">
+                <button onclick="escanearOtro()" class="btn btn-escanear">🔍 Escanear otro producto</button>
+                <a href="cuerpo_juguitos.html" class="btn btn-volver">🏠 Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para calcular cucharadas de azúcar
+        function calcularCucharadas(azucarTexto) {
+            const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
+            if (!match) return "N/A";
+            
+            const gramos = parseFloat(match[1]);
+            if (isNaN(gramos)) return "N/A";
+            
+            const cucharadas = (gramos / 4).toFixed(1);
+            return cucharadas;
+        }
+
+        // Función para dar recomendación nutricional
+        function darRecomendacion(azucarTexto) {
+            const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
+            if (!match) {
+                return {
+                    texto: "⚠️ No se pudo evaluar el contenido de azúcar",
+                    clase: "moderada"
+                };
+            }
+
+            const gramos = parseFloat(match[1]);
+            
+            if (gramos <= 10) {
+                return {
+                    texto: "✅ BUENA OPCIÓN: Bajo contenido de azúcar",
+                    clase: "buena"
+                };
+            } else if (gramos <= 25) {
+                return {
+                    texto: "⚠️ CONSUMO MODERADO: Contenido medio de azúcar",
+                    clase: "moderada"
+                };
+            } else {
+                return {
+                    texto: "❌ ALTO EN AZÚCAR: Consumir ocasionalmente",
+                    clase: "alta"
+                };
+            }
+        }
+
+        // Función para mostrar los resultados
+        function mostrarResultado(jugo) {
+            document.getElementById('nombre').textContent = jugo.nombre;
+            document.getElementById('marca').textContent = jugo.marca || '';
+            document.getElementById('azucar').textContent = jugo.azucar;
+            document.getElementById('calorias').textContent = jugo.calorias;
+            document.getElementById('volumen').textContent = jugo.volumen || 'N/A';
+            document.getElementById('tipo').textContent = jugo.tipo || 'Jugo';
+            document.getElementById('ingredientes').textContent = jugo.ingredientes || 'No especificados';
+
+            // Calcular cucharadas
+            const cucharadas = calcularCucharadas(jugo.azucar);
+            document.getElementById('cucharadas').textContent = `${cucharadas} cucharadas`;
+
+            // Mostrar recomendación
+            const recomendacion = darRecomendacion(jugo.azucar);
+            const recomendacionEl = document.getElementById('recomendacion');
+            recomendacionEl.textContent = recomendacion.texto;
+            recomendacionEl.className = `recomendacion ${recomendacion.clase}`;
+
+            // Mostrar sección de resultados y ocultar búsqueda
+            document.getElementById('searchSection').style.display = 'none';
+            document.getElementById('resultadoContainer').style.display = 'block';
+        }
+
+        // Función para buscar jugo por código
+        function buscarJugo() {
+            const codigo = document.getElementById("codigo").value.trim();
+            if (!codigo) {
+                alert("Por favor, ingresa un código.");
+                return;
+            }
+
+            // Mostrar loading
+            document.getElementById('nombre').textContent = 'Buscando producto...';
+            document.getElementById('searchSection').style.display = 'none';
+            document.getElementById('resultadoContainer').style.display = 'block';
+
+            // Leer archivo JSON con los jugos
+            fetch("data/jugos.json")
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    const jugo = data.find(j => j.codigo === codigo);
+                    if (jugo) {
+                        mostrarResultado(jugo);
+                    } else {
+                        // Producto no encontrado
+                        document.getElementById('nombre').textContent = 'Producto no encontrado';
+                        document.getElementById('marca').textContent = `Código: ${codigo}`;
+                        document.getElementById('recomendacion').innerHTML = `
+                            <div class="error">
+                                ❌ No se encontró ningún jugo con el código "${codigo}".<br>
+                                Verifica que el código esté correcto.
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al leer el archivo JSON:", error);
+                    document.getElementById('nombre').textContent = 'Error al cargar datos';
+                    document.getElementById('recomendacion').innerHTML = `
+                        <div class="error">
+                            ❌ Error al cargar los datos.<br>
+                            Verifica que el archivo jugos.json existe y es accesible.
+                        </div>
+                    `;
+                });
+        }
+
+        // Función para escanear otro producto
+        function escanearOtro() {
+            document.getElementById('codigo').value = '';
+            document.getElementById('searchSection').style.display = 'block';
+            document.getElementById('resultadoContainer').style.display = 'none';
+        }
+
+        // Enfocar el input al cargar la página
+        window.onload = function() {
+            document.getElementById('codigo').focus();
+        };
+    </script>
+</body>
+</html>
