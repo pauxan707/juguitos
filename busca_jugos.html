@@ -5,7 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escáner de Jugos - Información Nutricional</title>
     <style>
-        * {
+        *:root {
+            --verde: #b0ce41;
+            --rosa: #fcb4ba;
+            --rosa-oscuro: #f79da4;
+            --beige: #ffedc3;
+            --marron: #9f5234;
+            --negro: #000;
+            --blanco: #fff;
+    }
+        
+        {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -13,7 +23,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background:  var(--beige);
             min-height: 100vh;
             padding: 20px;
         }
@@ -28,7 +38,7 @@
         }
 
         .header {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, var(--verde), var(--rosa));
             color: white;
             padding: 30px;
             text-align: center;
@@ -66,7 +76,7 @@
         }
 
         .input-group input:focus {
-            border-color: #667eea;
+            border-color:  var(--rosa);
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
         }
 
@@ -135,7 +145,7 @@
             padding: 20px;
             border-radius: 15px;
             text-align: center;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid  var(--rosa);
             transition: all 0.3s ease;
         }
 
@@ -153,7 +163,7 @@
         .valor-grande {
             font-size: 1.8em;
             font-weight: bold;
-            color: #667eea;
+            color: #252088;
         }
 
         .cucharadas {
@@ -267,7 +277,7 @@
             <div class="input-group">
                 <input type="text" id="codigo" placeholder="Ej: 001, ABC123, etc." onkeypress="if(event.key==='Enter') buscarJugo()">
             </div>
-            <button onclick="buscarJugo()" class="btn">🔍 ESCANEÁ AQUÍ</button>
+            <button onclick="buscarJugo()" class="btn">ESCANEÁ AQUÍ</button>
         </div>
 
         <!-- Sección de resultados -->
@@ -316,7 +326,7 @@
 
             <div class="botones">
                 <button onclick="escanearOtro()" class="btn btn-escanear">🔍 Escanear otro producto</button>
-                <a href="cuerpo_juguitos.html" class="btn btn-volver">🏠 Volver al inicio</a>
+                <a href="cuerpo_juguitos.html" class="btn btn-volver"> Volver al inicio</a>
             </div>
         </div>
     </div>
