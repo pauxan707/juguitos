@@ -316,7 +316,7 @@
             </div>
 
             <div class="dato-oms">
-                <strong>💡 Dato importante:</strong> La OMS recomienda máximo 25g de azúcar añadida por día (equivale a 6 cucharadas)
+                <strong>💡 Dato importante:</strong> La OMS recomienda que no deberían superar los 15g aprox (3 cucharaditas de azúcar) 
             </div>
 
             <div class="ingredientes">
@@ -332,47 +332,83 @@
     </div>
 
     <script>
-        // Función para calcular cucharadas de azúcar
-        function calcularCucharadas(azucarTexto) {
-            const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
-            if (!match) return "N/A";
-            
-            const gramos = parseFloat(match[1]);
-            if (isNaN(gramos)) return "N/A";
-            
-            const cucharadas = (gramos / 4).toFixed(1);
-            return cucharadas;
-        }
+     // Función para calcular cucharadas de azúcar
+function calcularCucharadas(azucarTexto) {
+    const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
+    if (!match) return "N/A";
+    
+    const gramos = parseFloat(match[1]);
+    if (isNaN(gramos)) return "N/A";
+    
+    // 1 cucharadita = 5g de azúcar (15g = 3 cucharaditas)
+    const cucharaditas = (gramos / 5).toFixed(1);
+    return cucharaditas;
+}
 
-        // Función para dar recomendación nutricional
-        function darRecomendacion(azucarTexto) {
-            const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
-            if (!match) {
-                return {
-                    texto: "⚠️ No se pudo evaluar el contenido de azúcar",
-                    clase: "moderada"
-                };
-            }
+// Función para dar recomendación nutricional general
+function darRecomendacion(azucarTexto) {
+    const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
+    if (!match) {
+        return {
+            texto: "⚠️ No se pudo evaluar el contenido de azúcar",
+            clase: "moderada"
+        };
+    }
+    
+    const gramos = parseFloat(match[1]);
+    
+    if (gramos <= 10) {
+        return {
+            texto: "✅ BUENA OPCIÓN: Bajo contenido de azúcar",
+            clase: "buena"
+        };
+    } else if (gramos <= 25) {
+        return {
+            texto: "⚠️ CONSUMO MODERADO: Contenido medio de azúcar",
+            clase: "moderada"
+        };
+    } else {
+        return {
+            texto: "❌ ALTO EN AZÚCAR: Consumir ocasionalmente",
+            clase: "alta"
+        };
+    }
+}
 
-            const gramos = parseFloat(match[1]);
-            
-            if (gramos <= 10) {
-                return {
-                    texto: "✅ BUENA OPCIÓN: Bajo contenido de azúcar",
-                    clase: "buena"
-                };
-            } else if (gramos <= 25) {
-                return {
-                    texto: "⚠️ CONSUMO MODERADO: Contenido medio de azúcar",
-                    clase: "moderada"
-                };
-            } else {
-                return {
-                    texto: "❌ ALTO EN AZÚCAR: Consumir ocasionalmente",
-                    clase: "alta"
-                };
-            }
-        }
+// Función específica para recomendaciones en niños
+function darRecomendacionNinos(azucarTexto) {
+    const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
+    if (!match) {
+        return {
+            texto: "⚠️ No se pudo evaluar el contenido de azúcar",
+            clase: "moderada"
+        };
+    }
+    
+    const gramos = parseFloat(match[1]);
+    const cucharaditas = gramos / 5;
+    
+    // Límite recomendado para niños: 15g (3 cucharaditas) al día
+    if (gramos <= 6) {
+        return {
+            texto: `✅ EXCELENTE PARA NIÑOS: Solo ${cucharaditas.toFixed(1)} cucharadita(s)`,
+            clase: "buena",
+            porcentajeLimite: ((gramos / 15) * 100).toFixed(0)
+        };
+    } else if (gramos <= 15) {
+        return {
+            texto: `⚠️ ACEPTABLE PARA NIÑOS: ${cucharaditas.toFixed(1)} cucharadita(s) - cerca del límite diario`,
+            clase: "moderada",
+            porcentajeLimite: ((gramos / 15) * 100).toFixed(0)
+        };
+    } else {
+        return {
+            texto: `❌ EXCEDE LÍMITE INFANTIL: ${cucharaditas.toFixed(1)} cucharadita(s) - supera la recomendación diaria`,
+            clase: "alta",
+            porcentajeLimite: ((gramos / 15) * 100).toFixed(0)
+        };
+    }
+}
 
         // Función para mostrar los resultados
         function mostrarResultado(jugo) {
