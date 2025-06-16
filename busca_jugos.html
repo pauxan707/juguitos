@@ -316,7 +316,7 @@
             </div>
 
             <div class="dato-oms">
-                <strong>💡 Dato importante:</strong> La OMS recomienda que no deberían superar los 15g aprox por día (3 cucharaditas de azúcar) 
+                <strong>💡 Dato importante:</strong> La OMS recomienda que no deberían superar los 15g aprox (3 cucharaditas de azúcar) 
             </div>
 
             <div class="ingredientes">
@@ -448,53 +448,53 @@ function darRecomendacionNinos(azucarTexto) {
             document.getElementById('searchSection').style.display = 'none';
             document.getElementById('resultadoContainer').style.display = 'block';
 
-            // Leer archivo JSON con los jugos
-            fetch("./data/jugos.json")
-                .then(res => {
-                    if (!res.ok) {
-                        throw new Error(`HTTP error! status: ${res.status}`);
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    const jugo = data.find(j => j.codigo === codigo);
-                    if (jugo) {
-                        mostrarResultado(jugo);
-                    } else {
-                        // Producto no encontrado
-                        document.getElementById('nombre').textContent = 'Producto no encontrado';
-                        document.getElementById('marca').textContent = `Código: ${codigo}`;
-                        document.getElementById('recomendacion').innerHTML = `
-                            <div class="error">
-                                ❌ No se encontró ningún jugo con el código "${codigo}".<br>
-                                Verifica que el código esté correcto.
-                            </div>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error al leer el archivo JSON:", error);
-                    document.getElementById('nombre').textContent = 'Error al cargar datos';
-                    document.getElementById('recomendacion').innerHTML = `
-                        <div class="error">
-                            ❌ Error al cargar los datos.<br>
-                            Verifica que el archivo jugos.json existe y es accesible.
-                        </div>
-                    `;
-                });
+           
+async function buscarJugo() {
+    const codigo = document.getElementById("codigo").value.trim();
+    if (!codigo) {
+        alert("Por favor, ingresa un código.");
+        return;
+    }
+
+    // Mostrar loading
+    document.getElementById('nombre').textContent = 'Buscando producto...';
+    document.getElementById('searchSection').style.display = 'none';
+    document.getElementById('resultadoContainer').style.display = 'block';
+
+    try {
+        const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${codigo}.json`);
+
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
         }
 
-        // Función para escanear otro producto
-        function escanearOtro() {
-            document.getElementById('codigo').value = '';
-            document.getElementById('searchSection').style.display = 'block';
-            document.getElementById('resultadoContainer').style.display = 'none';
-        }
+        const data = await res.json();
 
-        // Enfocar el input al cargar la página
-        window.onload = function() {
-            document.getElementById('codigo').focus();
-        };
+        if (data.status === 1 && data.product) {
+            const jugo = data.product;
+            mostrarResultado(jugo);
+        } else {
+            // Producto no encontrado
+            document.getElementById('nombre').textContent = 'Producto no encontrado';
+            document.getElementById('marca').textContent = `Código: ${codigo}`;
+            document.getElementById('recomendacion').innerHTML = `
+                <div class="error">
+                    ❌ No se encontró ningún jugo con el código "${codigo}".<br>
+                    Verifica que el código esté correcto.
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error("Error al buscar el producto:", error);
+        document.getElementById('nombre').textContent = 'Error al cargar datos';
+        document.getElementById('recomendacion').innerHTML = `
+            <div class="error">
+                ❌ Error al cargar los datos.<br>
+                Verifica tu conexión o intenta nuevamente más tarde.
+            </div>
+        `;
+    }
+}
     </script>
 </body>
 </html>
