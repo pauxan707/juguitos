@@ -14,6 +14,24 @@
             --negro: #000;
             --blanco: #fff;
     }
+
+    header {
+  background: var(--verde);
+  color: var(--blanco);
+  padding:  20px;
+  margin-bottom: 20px; /* Espacio después del header */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+    header div:first-child {
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
         
         {
             margin: 0;
@@ -264,6 +282,10 @@
         }
     </style>
 </head>
+<header>
+    <div>Scan & Sip</div>
+
+  </header>
 <body>
     <div class="container">
         <div class="header">
@@ -436,19 +458,7 @@ function darRecomendacionNinos(azucarTexto) {
         }
 
         // Función para buscar jugo por código
-        function buscarJugo() {
-            const codigo = document.getElementById("codigo").value.trim();
-            if (!codigo) {
-                alert("Por favor, ingresa un código.");
-                return;
-            }
-
-            // Mostrar loading
-            document.getElementById('nombre').textContent = 'Buscando producto...';
-            document.getElementById('searchSection').style.display = 'none';
-            document.getElementById('resultadoContainer').style.display = 'block';
-
-           
+          // Función para buscar jugo por código - VERSIÓN ARREGLADA
 async function buscarJugo() {
     const codigo = document.getElementById("codigo").value.trim();
     if (!codigo) {
@@ -471,29 +481,88 @@ async function buscarJugo() {
         const data = await res.json();
 
         if (data.status === 1 && data.product) {
-            const jugo = data.product;
+            const producto = data.product;
+            
+            // Adaptar los datos de OpenFoodFacts al formato esperado
+            const jugo = {
+                nombre: producto.product_name || 'Producto sin nombre',
+                marca: producto.brands || '',
+                azucar: producto.nutriments?.sugars_100g ? `${producto.nutriments.sugars_100g}g` : 'No disponible',
+                calorias: producto.nutriments?.['energy-kcal_100g'] ? `${producto.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
+                volumen: '100g', // OpenFoodFacts da valores por 100g
+                tipo: producto.categories_tags?.includes('en:beverages') ? 'Bebida' : 'Producto',
+                ingredientes: producto.ingredients_text || 'No especificados'
+            };
+            
             mostrarResultado(jugo);
         } else {
             // Producto no encontrado
             document.getElementById('nombre').textContent = 'Producto no encontrado';
             document.getElementById('marca').textContent = `Código: ${codigo}`;
-            document.getElementById('recomendacion').innerHTML = `
+            document.getElementById('azucar').textContent = '-';
+            document.getElementById('calorias').textContent = '-';
+            document.getElementById('volumen').textContent = '-';
+            document.getElementById('tipo').textContent = '-';
+            document.getElementById('ingredientes').textContent = '-';
+            document.getElementById('cucharadas').textContent = '- cucharadas';
+            
+            const recomendacionEl = document.getElementById('recomendacion');
+            recomendacionEl.innerHTML = `
                 <div class="error">
-                    ❌ No se encontró ningún jugo con el código "${codigo}".<br>
+                    ❌ No se encontró ningún producto con el código "${codigo}".<br>
                     Verifica que el código esté correcto.
                 </div>
             `;
+            recomendacionEl.className = 'recomendacion';
         }
     } catch (error) {
         console.error("Error al buscar el producto:", error);
         document.getElementById('nombre').textContent = 'Error al cargar datos';
-        document.getElementById('recomendacion').innerHTML = `
+        document.getElementById('marca').textContent = '';
+        document.getElementById('azucar').textContent = '-';
+        document.getElementById('calorias').textContent = '-';
+        document.getElementById('volumen').textContent = '-';
+        document.getElementById('tipo').textContent = '-';
+        document.getElementById('ingredientes').textContent = '-';
+        document.getElementById('cucharadas').textContent = '- cucharadas';
+        
+        const recomendacionEl = document.getElementById('recomendacion');
+        recomendacionEl.innerHTML = `
             <div class="error">
                 ❌ Error al cargar los datos.<br>
-                Verifica tu conexión o intenta nuevamente más tarde.
+                Verifica tu conexión o intenta nuevamente más tarde.<br>
+                Error: ${error.message}
             </div>
         `;
+        recomendacionEl.className = 'recomendacion';
     }
+}  
+// Función para escanear otro producto - VERSIÓN ARREGLADA
+function escanearOtro() {
+    // Limpiar el input
+    document.getElementById('codigo').value = '';
+    
+    // Limpiar todos los campos de resultado
+    document.getElementById('nombre').textContent = 'Cargando...';
+    document.getElementById('marca').textContent = '';
+    document.getElementById('azucar').textContent = '-';
+    document.getElementById('calorias').textContent = '-';
+    document.getElementById('volumen').textContent = '-';
+    document.getElementById('tipo').textContent = '-';
+    document.getElementById('ingredientes').textContent = '-';
+    document.getElementById('cucharadas').textContent = '- cucharadas';
+    
+    // Limpiar recomendación
+    const recomendacionEl = document.getElementById('recomendacion');
+    recomendacionEl.textContent = 'Evaluando producto...';
+    recomendacionEl.className = 'recomendacion';
+    
+    // Mostrar sección de búsqueda y ocultar resultados
+    document.getElementById('searchSection').style.display = 'block';
+    document.getElementById('resultadoContainer').style.display = 'none';
+    
+    // Enfocar el input para facilitar la siguiente búsqueda
+    document.getElementById('codigo').focus();
 }
     </script>
 </body>
