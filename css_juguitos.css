@@ -1,12 +1,12 @@
  :root {
-      --verde: #b0ce41;
-      --rosa: #fcb4ba;
-      --rosa-oscuro: #f79da4;
-      --beige: #ffedc3;
-      --marron: #9f5234;
-      --negro: #000;
-      --blanco: #fff;
-      --marron-oscuro: #45281d;
+            --verde: #461659;
+            --rosa: #c4ca30;
+            --verde-masoscuro: #65822a;
+            --rosa-oscuro: #b51847;
+            --beige: #ffedc3;
+            --marron: #8D6748;
+            --negro: #000;
+            --blanco: #dabdff;
     }
 
     * {
@@ -39,7 +39,7 @@
     }
 
     header .button {
-      background: linear-gradient(45deg, var(--rosa), var(--rosa-oscuro));
+      background: var(--rosa-oscuro);
       color: var(--blanco);
       border: none;
       border-radius: 25px;
@@ -61,7 +61,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: linear-gradient(135deg, var(--rosa), var(--beige));
+      background: linear-gradient(145deg, var(--verde-masoscuro), var(--rosa));
       padding: 60px 40px;
       flex-wrap: wrap;
       box-shadow: inset 0 4px 15px rgba(0,0,0,0.1);
@@ -69,7 +69,7 @@
 
     .textoprincipal-text {
       max-width: 50%;
-      color: var(--marron-oscuro);
+      color: var(--blanco);
     }
 
     .textoprincipal-text h1 {
@@ -83,7 +83,7 @@
     .textoprincipal-text p {
       margin: 20px 0;
       font-size: 1.2rem;
-      color: var(--negro);
+      color: var(--blanco);
       line-height: 1.6;
     }
 
@@ -120,7 +120,7 @@
       display: flex;
       justify-content: space-around;
       padding: 40px 20px;
-      background: var(--beige);
+      background: linear-gradient(200deg, var(--rosa), var(--verde-masoscuro));
       flex-wrap: wrap;
       gap: 20px;
     }
@@ -152,7 +152,7 @@
       padding: 40px;
       margin: 20px;
       border-radius: 20px;
-      background: linear-gradient(135deg, var(--blanco), var(--beige));
+      background: var(--verde);
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       border-left: 5px solid var(--verde);
     }
@@ -163,7 +163,7 @@
     }
 
     .seccion h2 {
-      color: var(--marron-oscuro);
+      color: var(--beige);
       font-size: 2.2rem;
       margin-bottom: 20px;
       text-align: center;
@@ -182,7 +182,7 @@
     }
 
     .seccion li {
-      background: var(--rosa);
+      background: var(--beige);
       color: var(--marron);
       padding: 15px 20px;
       margin: 10px 0;

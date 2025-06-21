@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Crear Usuario</title>
+  <title>Iniciar Sesión - Scan & Sip</title>
   <link rel="stylesheet" href="css_juguitos.css" />
 </head>
 <body>
@@ -12,16 +12,25 @@
 
   <section class="textoprincipal">
     <div class="textoprincipal-text">
-      <h2>Crear nuevo usuario</h2>
-      <form id="signupForm">
+      <h2>Iniciar Sesión</h2>
+      
+      <!-- Estado de autenticación -->
+      <div id="authStatus" style="display: none; padding: 10px; margin-bottom: 15px; border-radius: 5px;"></div>
+      
+      <form id="loginForm">
         <input type="text" id="username" placeholder="Usuario" required><br><br>
         <input type="password" id="password" placeholder="Contraseña" required><br><br>
-        <button type="submit">Registrarse</button>
+        <button type="submit">Iniciar Sesión</button>
       </form>
+      
       <p id="mensaje"></p>
-    </div>
-  </section>
+      
+      <!-- Enlaces de navegación -->
+      <div style="margin-top: 20px;">
+        <p>¿No tienes una cuenta? <a href="signup.html">Registrarse</a></p>
+        <p><a href="index.html">Volver al inicio</a></p>
+      </div>
 
-  <script src="sign_up.js"></script>
+
 </body>
 </html>
