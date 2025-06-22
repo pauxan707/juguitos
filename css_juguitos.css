@@ -1,14 +1,12 @@
- :root {
-            --verde: #461659;
-            --rosa: #c4ca30;
-            --verde-masoscuro: #65822a;
-            --rosa-oscuro: #b51847;
-            --beige: #ffedc3;
-            --marron: #8D6748;
-            --negro: #000;
-            --blanco: #dabdff;
-    }
-
+:root {
+    --verde: #003fa3;        /* Azul vibrante y fresco */
+    --rosa: #FFCE32;         /* Amarillo suave/durazno */
+    --rosa-oscuro: #fbdd7b;  /* Coral suave */
+    --beige: #F7F6F2;        /* Beige claro y limpio */
+    --marron: #6D4C41;       /* Marrón chocolate elegante */
+    --negro: #232946;        /* Azul oscuro profundo */
+    --blanco: #ffffff;       /* Blanco puro */
+}
     * {
       margin: 0;
       padding: 0;
@@ -39,7 +37,7 @@
     }
 
     header .button {
-      background: var(--rosa-oscuro);
+      background: linear-gradient(45deg, var(--rosa), var(--rosa-oscuro));
       color: var(--blanco);
       border: none;
       border-radius: 25px;
@@ -61,7 +59,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: linear-gradient(145deg, var(--verde-masoscuro), var(--rosa));
+      background: linear-gradient(135deg, var(--rosa), var(--beige));
       padding: 60px 40px;
       flex-wrap: wrap;
       box-shadow: inset 0 4px 15px rgba(0,0,0,0.1);
@@ -69,7 +67,7 @@
 
     .textoprincipal-text {
       max-width: 50%;
-      color: var(--blanco);
+      color: var(--marron-oscuro);
     }
 
     .textoprincipal-text h1 {
@@ -83,7 +81,7 @@
     .textoprincipal-text p {
       margin: 20px 0;
       font-size: 1.2rem;
-      color: var(--blanco);
+      color: var(--negro);
       line-height: 1.6;
     }
 
@@ -120,50 +118,46 @@
       display: flex;
       justify-content: space-around;
       padding: 40px 20px;
-      background: linear-gradient(200deg, var(--rosa), var(--verde-masoscuro));
+      background: var(--beige);
       flex-wrap: wrap;
       gap: 20px;
     }
 
     .lista {
-      background: var(--rosa-oscuro);
-      color: var(--blanco);
-      border: none;
-      padding: 20px 35px;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 25px;
+      background: var(--blanco);
+      color: var(--verde);
+      border-radius: 8px;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(29,99,255,0.06);
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      text-decoration: none;
-      display: inline-block;
-      min-width: 150px;
-      text-align: center;
+      transition: background 0.2s, color 0.2s, transform 0.2s;
+      border: 2px solid transparent;
     }
-
-    .lista:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    .lista:hover, .lista.activa {
+      background: var(--rosa);
+      color: var(--negro);
+      border-color: var(--verde);
+      transform: translateY(-4px) scale(1.04);
     }
-
     .seccion {
       display: none;
-      padding: 40px;
-      margin: 20px;
-      border-radius: 20px;
-      background: var(--verde);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      border-left: 5px solid var(--verde);
-    }
+      background: var(--blanco);
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(29,99,255,0.08);
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 2rem;
+      text-align: center;
+      animation: fadeIn 0.5s;
+      }
 
     .seccion.activa {
       display: block;
-      animation: fadeIn 0.5s ease-in;
     }
-
     .seccion h2 {
-      color: var(--beige);
+      color: var(--marron-oscuro);
       font-size: 2.2rem;
       margin-bottom: 20px;
       text-align: center;
@@ -182,7 +176,7 @@
     }
 
     .seccion li {
-      background: var(--beige);
+      background: var(--rosa);
       color: var(--marron);
       padding: 15px 20px;
       margin: 10px 0;
@@ -234,3 +228,57 @@
         max-width: 250px;
       }
     }
+
+.logros-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.logro {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid;
+    transition: transform 0.3s ease;
+}
+
+.logro:hover {
+    transform: translateY(-5px);
+}
+
+.logro-conseguido {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    border-color: #28a745;
+    color: #155724;
+}
+
+.logro-pendiente {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.logro-icono {
+    font-size: 3em;
+    margin-right: 20px;
+}
+
+.logro-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.2em;
+}
+
+.logro-info p {
+    margin: 0 0 10px 0;
+    font-size: 0.9em;
+}
+
+.logro-estado {
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+

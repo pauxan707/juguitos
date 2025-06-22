@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Iniciar Sesión - Scan & Sip</title>
+  <title>Crear Usuario</title>
   <link rel="stylesheet" href="css_juguitos.css" />
 </head>
 <body>
@@ -12,25 +12,122 @@
 
   <section class="textoprincipal">
     <div class="textoprincipal-text">
-      <h2>Iniciar Sesión</h2>
-      
-      <!-- Estado de autenticación -->
-      <div id="authStatus" style="display: none; padding: 10px; margin-bottom: 15px; border-radius: 5px;"></div>
-      
-      <form id="loginForm">
+      <h2>Crear nuevo usuario</h2>
+      <form id="signupForm">
         <input type="text" id="username" placeholder="Usuario" required><br><br>
         <input type="password" id="password" placeholder="Contraseña" required><br><br>
-        <button type="submit">Iniciar Sesión</button>
+        <button type="submit">Registrarse</button>
       </form>
-      
       <p id="mensaje"></p>
       
-      <!-- Enlaces de navegación -->
+      <!-- Enlace para usuarios existentes -->
       <div style="margin-top: 20px;">
-        <p>¿No tienes una cuenta? <a href="signup.html">Registrarse</a></p>
-        <p><a href="index.html">Volver al inicio</a></p>
+        <p>¿Ya tienes una cuenta? <a href="login.html">Iniciar sesión</a></p>
       </div>
+    </div>
+  </section>
 
+  <script>
+    // Sistema de usuarios mejorado
+    function getUsers() {
+      return JSON.parse(localStorage.getItem('users') || '{}');
+    }
 
+    function saveUsers(users) {
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    function createUser(username, password) {
+      const users = getUsers();
+      
+      // Verificar si el usuario ya existe
+      if (users[username]) {
+        return { success: false, message: 'Este usuario ya existe' };
+      }
+      
+      // Validar contraseña
+      if (password.length < 6) {
+        return { success: false, message: 'La contraseña debe tener al menos 6 caracteres' };
+      }
+      
+      // Crear nuevo usuario con logros iniciales
+      users[username] = {
+        password: password,
+        name: username,
+        fechaRegistro: new Date().toLocaleDateString(),
+        logros: [
+          { 
+            titulo: 'Bienvenido a Scan & Sip', 
+            descripcion: 'Te has registrado exitosamente en nuestra plataforma', 
+            fecha: new Date().toLocaleDateString(),
+            icono: '🎉'
+          },
+          {
+            titulo: 'Primer Paso',
+            descripcion: 'Has dado el primer paso hacia una vida más saludable',
+            fecha: new Date().toLocaleDateString(),
+            icono: '👟'
+          }
+        ],
+        configuracion: {
+          notificaciones: true,
+          tema: 'claro'
+        }
+      };
+      
+      saveUsers(users);
+      return { success: true, message: 'Usuario creado exitosamente' };
+    }
+
+    // Manejar el formulario de registro
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const mensaje = document.getElementById('mensaje');
+      
+      // Validaciones básicas
+      if (!username || !password) {
+        mensaje.innerHTML = '<span style="color: red;">Por favor, completa todos los campos</span>';
+        return;
+      }
+      
+      // Validar formato de usuario
+      if (username.length < 3) {
+        mensaje.innerHTML = '<span style="color: red;">El usuario debe tener al menos 3 caracteres</span>';
+        return;
+      }
+      
+      // Intentar crear el usuario
+      const result = createUser(username, password);
+      
+      if (result.success) {
+        mensaje.innerHTML = `<span style="color: green;">${result.message}</span>`;
+        
+        // Limpiar formulario
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        
+        // Redirigir después de 2 segundos
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+        
+        // Mostrar mensaje de redirección
+        setTimeout(() => {
+          mensaje.innerHTML += '<br><span style="color: blue;">Redirigiendo al login...</span>';
+        }, 1000);
+        
+      } else {
+    mensaje.innerHTML = `${result.message}`;
+}
+
+document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        document.getElementById('signupForm').dispatchEvent(new Event('submit'));
+    }
+});
+  </script>
 </body>
 </html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Iniciar Sesión - Scan & Sip</title>
+  <link rel="stylesheet" href="css_juguitos.css" />
+</head>
+<body>
+  <header>
+    <div>Scan & Sip</div>
+  </header>
+
+  <section class="textoprincipal">
+    <div class="textoprincipal-text">
+      <h2>Iniciar Sesión</h2>
+      
+      <!-- Estado de autenticación -->
+      <div id="authStatus" style="display: none; padding: 10px; margin-bottom: 15px; border-radius: 5px;"></div>
+      
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="Usuario" required><br><br>
+        <input type="password" id="password" placeholder="Contraseña" required><br><br>
+        <button type="submit">Iniciar Sesión</button>
+      </form>
+      
+      <p id="mensaje"></p>
+      
+      <!-- Enlaces de navegación -->
+      <div style="margin-top: 20px;">
+        <p>¿No tienes una cuenta? <a href="sing_up.html">Registrarse</a></p>
+        <p><a href="cuerpo_juguitos.html">Volver al inicio</a></p>
+      </div>
+      
+      <!-- Información de usuario demo -->
+      <div style="margin-top: 30px; padding: 15px; background-color: #f0f8ff; border-radius: 5px; font-size: 0.9em;">
+        <strong>👤 Usuario de prueba:</strong><br>
+        Usuario: <code>demo</code><br>
+        Contraseña: <code>123456</code>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Crear usuario demo si no existe
+    function createDemoUser() {
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      
+      if (!users['demo']) {
+        users['demo'] = {
+          password: '123456',
+          name: 'Usuario Demo',
+          fechaRegistro: '2025-06-01',
+          logros: [
+            { 
+              titulo: 'Explorador Inicial', 
+              descripcion: 'Has explorado la biblioteca de recursos', 
+              fecha: '2025-06-15',
+              icono: '📚'
+            },
+            {
+              titulo: 'Comparador Experto',
+              descripcion: 'Has usado el comparador de productos',
+              fecha: '2025-06-18',
+              icono: '⚖️'
+            },
+            {
+              titulo: 'Usuario Activo',
+              descripcion: 'Has mantenido tu cuenta activa por una semana',
+              fecha: '2025-06-20',
+              icono: '🔥'
+            }
+          ]
+        };
+        localStorage.setItem('users', JSON.stringify(users));
+      }
+    }
+
+    // Verificar si ya hay una sesión iniciada
+    function checkExistingSession() {
+      const currentUser = sessionStorage.getItem('currentUser');
+      if (currentUser) {
+        const user = JSON.parse(currentUser);
+        const authStatus = document.getElementById('authStatus');
+        authStatus.style.display = 'block';
+        authStatus.style.backgroundColor = '#d4edda';
+        authStatus.style.color = '#155724';
+        authStatus.innerHTML = `Ya tienes una sesión iniciada como <strong>${user.name}</strong>. <a href="cuerpo_juguitos.html">Ir al menú principal</a>`;
+        
+        // Ocultar formulario
+        document.getElementById('loginForm').style.display = 'none';
+      }
+    }
+
+    function loginUser(username, password) {
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      
+      if (users[username] && users[username].password === password) {
+        const currentUser = {
+          username: username,
+          name: users[username].name,
+          loginTime: new Date().toLocaleString()
+        };
+        
+        // Guardar en sessionStorage
+        sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        return { success: true, message: 'Inicio de sesión exitoso' };
+      } else {
+        return { success: false, message: 'Usuario o contraseña incorrectos' };
+      }
+    }
+
+    // Manejar el formulario de login
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const mensaje = document.getElementById('mensaje');
+      
+      if (!username || !password) {
+        mensaje.innerHTML = '<span style="color: red;">Por favor, completa todos los campos</span>';
+        return;
+      }
+      
+      const result = loginUser(username, password);
+      
+      if (result.success) {
+        mensaje.innerHTML = `<span style="color: green;">${result.message}</span>`;
+        
+        // Redirigir después de 1 segundo
+        setTimeout(() => {
+          window.location.href = 'cuerpo_juguitos.html';
+        }, 1000);
+        
+      } else {
+        mensaje.innerHTML = `<span style="color: red;">${result.message}</span>`;
+        
+        // Limpiar contraseña en caso de error
+        document.getElementById('password').value = '';
+      }
+    });
+
+    // Inicializar al cargar la página
+    window.onload = function() {
+      createDemoUser();
+      checkExistingSession();
+    };
+
+    // Manejar tecla Enter
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+      }
+    });
+  </script>
+</body>
+</html>
