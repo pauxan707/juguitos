@@ -29,10 +29,10 @@ function buscarJugo() {
   </section>
 
   <section class="accesorios">
-    <div class="lista" onclick="mostrarSeccion('biblioteca')">BIBLIOTECA</div>
-    <div class="lista" onclick="mostrarSeccion('comparador')">COMPARADOR</div>
-    <div class="lista" onclick="mostrarSeccion('logros')">LOGROS</div>
-  </section>
+  <div class="lista" onclick="mostrarSeccion('biblioteca'); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">BIBLIOTECA</div>
+  <div class="lista" onclick="mostrarSeccion('comparador'); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">COMPARADOR</div>
+  <div class="lista" onclick="mostrarSeccion('logros'); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">LOGROS</div>
+</section>
 
   <!-- SECCIONES OCULTAS/MOSTRADAS -->
   <section id="biblioteca" class="seccion">
@@ -46,7 +46,14 @@ function buscarJugo() {
 
   <section id="comparador" class="seccion">
     <h2>COMPARADOR</h2>
-    <p>Contenido exclusivo del comparador.</p>
+    <div class="comparador-form">
+      <label for="codigo1">Código Jugo 1:</label>
+      <input type="text" id="codigo1" placeholder="Ej: 123">
+      <label for="codigo2">Código Jugo 2:</label>
+      <input type="text" id="codigo2" placeholder="Ej: 456">
+      <button onclick="compararPorCodigo()">Comparar</button>
+    </div>
+    <div id="resultado-comparador"></div>
   </section>
 
   <section id="logros" class="seccion">
@@ -55,6 +62,104 @@ function buscarJugo() {
   </section>
 
   <script src="javas.js"></script>
+  <script>
+// Datos de ejemplo: puedes agregar más jugos y datos reales
+const jugos = {
+  "123": { nombre: "Naranja", azucar: "8g", calorias: "40kcal", vitaminaC: "30mg" },
+  "456": { nombre: "Manzana", azucar: "10g", calorias: "45kcal", vitaminaC: "10mg" },
+  "789": { nombre: "Multifruta", azucar: "12g", calorias: "50kcal", vitaminaC: "20mg" }
+};
+
+async function compararPorCodigo() {
+  const cod1 = document.getElementById('codigo1').value.trim();
+  const cod2 = document.getElementById('codigo2').value.trim();
+  const resultado = document.getElementById('resultado-comparador');
+
+  if (!cod1 || !cod2) {
+    resultado.innerHTML = "<p style='color:red;'>Por favor, ingresa ambos códigos.</p>";
+    return;
+  }
+
+  resultado.innerHTML = "Buscando información...";
+
+  try {
+    // Pedir ambos productos en paralelo
+    const [res1, res2] = await Promise.all([
+      fetch(`https://world.openfoodfacts.org/api/v0/product/${cod1}.json`),
+      fetch(`https://world.openfoodfacts.org/api/v0/product/${cod2}.json`)
+    ]);
+    const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
+
+    // Verificar si ambos existen
+    if (data1.status !== 1 || data2.status !== 1) {
+      resultado.innerHTML = "<p style='color:red;'>Uno o ambos códigos no existen en la base de datos.</p>";
+      return;
+    }
+
+    // Adaptar los datos al formato esperado
+    const info1 = {
+      nombre: data1.product.product_name || 'Sin nombre',
+      azucar: data1.product.nutriments?.sugars_100g ? `${data1.product.nutriments.sugars_100g}g` : 'No disponible',
+      calorias: data1.product.nutriments?.['energy-kcal_100g'] ? `${data1.product.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
+      vitaminaC: data1.product.nutriments?.vitamin_c_100g ? `${data1.product.nutriments.vitamin_c_100g}mg` : 'No disponible',
+      carbohidratos: data1.product.nutriments?.carbohydrates_100g ? `${data1.product.nutriments.carbohydrates_100g}g` : 'No disponible',
+      proteina: data1.product.nutriments?.proteins_100g ? `${data1.product.nutriments.proteins_100g}g` : 'No disponible',
+      grasas: data1.product.nutriments?.fat_100g ? `${data1.product.nutriments.fat_100g}g` : 'No disponible'
+    };
+    const info2 = {
+      nombre: data2.product.product_name || 'Sin nombre',
+      azucar: data2.product.nutriments?.sugars_100g ? `${data2.product.nutriments.sugars_100g}g` : 'No disponible',
+      calorias: data2.product.nutriments?.['energy-kcal_100g'] ? `${data2.product.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
+      vitaminaC: data2.product.nutriments?.vitamin_c_100g ? `${data2.product.nutriments.vitamin_c_100g}mg` : 'No disponible',
+      carbohidratos: data2.product.nutriments?.carbohydrates_100g ? `${data2.product.nutriments.carbohydrates_100g}g` : 'No disponible',
+      proteina: data2.product.nutriments?.proteins_100g ? `${data2.product.nutriments.proteins_100g}g` : 'No disponible',
+      grasas: data2.product.nutriments?.fat_100g ? `${data2.product.nutriments.fat_100g}g` : 'No disponible'
+    };
+
+    resultado.innerHTML = `
+      <table border="1" style="margin-top:10px;">
+        <tr>
+          <th></th>
+          <th>${info1.nombre}</th>
+          <th>${info2.nombre}</th>
+        </tr>
+        <tr>
+          <td>Azúcar</td>
+          <td>${info1.azucar}</td>
+          <td>${info2.azucar}</td>
+        </tr>
+        <tr>
+          <td>Calorías</td>
+          <td>${info1.calorias}</td>
+          <td>${info2.calorias}</td>
+        </tr>
+        <tr>
+          <td>Vitamina C</td>
+          <td>${info1.vitaminaC}</td>
+          <td>${info2.vitaminaC}</td>
+        </tr>
+        <tr>
+          <td>Carbohidratos</td>
+          <td>${info1.carbohidratos}</td>
+          <td>${info2.carbohidratos}</td>
+        </tr>
+        <tr>
+          <td>Proteína</td>
+          <td>${info1.proteina}</td>
+          <td>${info2.proteina}</td>
+        </tr>
+        <tr>
+          <td>Grasas</td>
+          <td>${info1.grasas}</td>
+          <td>${info2.grasas}</td>
+        </tr>
+      </table>
+    `;
+  } catch (error) {
+    resultado.innerHTML = `<p style='color:red;'>Error al buscar los productos. Intenta nuevamente.</p>`;
+  }
+}
+</script>
 </body>
 
 </html>
