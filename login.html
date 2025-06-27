@@ -28,7 +28,7 @@
       <!-- Enlaces de navegación -->
       <div style="margin-top: 20px;">
         <p>¿No tienes una cuenta? <a href="sing_up.html">Registrarse</a></p>
-        <p><a href="cuerpo_juguitos.html">Volver al inicio</a></p>
+        <p><a href="index.html">Volver al inicio</a></p>
       </div>
       
       <!-- Información de usuario demo -->
@@ -84,7 +84,7 @@
         authStatus.style.display = 'block';
         authStatus.style.backgroundColor = '#d4edda';
         authStatus.style.color = '#155724';
-        authStatus.innerHTML = `Ya tienes una sesión iniciada como <strong>${user.name}</strong>. <a href="cuerpo_juguitos.html">Ir al menú principal</a>`;
+        authStatus.innerHTML = `Ya tienes una sesión iniciada como <strong>${user.name}</strong>. <a href="index.html">Ir al menú principal</a>`;
         
         // Ocultar formulario
         document.getElementById('loginForm').style.display = 'none';
@@ -130,7 +130,7 @@
         
         // Redirigir después de 1 segundo
         setTimeout(() => {
-          window.location.href = 'cuerpo_juguitos.html';
+          window.location.href = 'index.html';
         }, 1000);
         
       } else {
