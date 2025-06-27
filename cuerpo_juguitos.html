@@ -101,14 +101,46 @@ async function compararPorCodigo() {
       nombre: data1.product.product_name || 'Sin nombre',
       azucar: data1.product.nutriments?.sugars_100g ? `${data1.product.nutriments.sugars_100g}g` : 'No disponible',
       calorias: data1.product.nutriments?.['energy-kcal_100g'] ? `${data1.product.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
+      sodio: data1.product.nutriments?.sodium_100g ? `${data1.product.nutriments.sodium_100g}g` : 'No disponible',
+      carbohidratos: data1.product.nutriments?.carbohydrates_100g ? `${data1.product.nutriments.carbohydrates_100g}g` : 'No disponible',
+      grasas: data1.product.nutriments?.fat_100g ? `${data1.product.nutriments.fat_100g}g` : 'No disponible',
+      proteinas: data1.product.nutriments?.proteins_100g ? `${data1.product.nutriments.proteins_100g}g` : 'No disponible',
       vitaminaC: data1.product.nutriments?.vitamin_c_100g ? `${data1.product.nutriments.vitamin_c_100g}mg` : 'No disponible'
     };
     const info2 = {
       nombre: data2.product.product_name || 'Sin nombre',
       azucar: data2.product.nutriments?.sugars_100g ? `${data2.product.nutriments.sugars_100g}g` : 'No disponible',
       calorias: data2.product.nutriments?.['energy-kcal_100g'] ? `${data2.product.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
+      sodio: data2.product.nutriments?.sodium_100g ? `${data2.product.nutriments.sodium_100g}g` : 'No disponible',
+      carbohidratos: data2.product.nutriments?.carbohydrates_100g ? `${data2.product.nutriments.carbohydrates_100g}g` : 'No disponible',
+      grasas: data2.product.nutriments?.fat_100g ? `${data2.product.nutriments.fat_100g}g` : 'No disponible',
+      proteinas: data2.product.nutriments?.proteins_100g ? `${data2.product.nutriments.proteins_100g}g` : 'No disponible',
       vitaminaC: data2.product.nutriments?.vitamin_c_100g ? `${data2.product.nutriments.vitamin_c_100g}mg` : 'No disponible'
     };
+
+    // Crear un array de filas con los datos y ordenarlas alfabéticamente por el nombre del nutriente
+    const filas = [
+      { nombre: 'Azúcar', valor1: info1.azucar, valor2: info2.azucar },
+      { nombre: 'Calorías', valor1: info1.calorias, valor2: info2.calorias },
+      { nombre: 'Carbohidratos', valor1: info1.carbohidratos, valor2: info2.carbohidratos },
+      { nombre: 'Grasas', valor1: info1.grasas, valor2: info2.grasas },
+      { nombre: 'Proteínas', valor1: info1.proteinas, valor2: info2.proteinas },
+      { nombre: 'Sodio', valor1: info1.sodio, valor2: info2.sodio },
+      { nombre: 'Vitamina C', valor1: info1.vitaminaC, valor2: info2.vitaminaC }
+    ];
+    filas.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+
+    // Construir el HTML de la tabla
+    let filasHTML = '';
+    for (const fila of filas) {
+      filasHTML += `
+        <tr>
+          <td>${fila.nombre}</td>
+          <td>${fila.valor1}</td>
+          <td>${fila.valor2}</td>
+        </tr>
+      `;
+    }
 
     resultado.innerHTML = `
       <div style="background-color: #FFD74F; padding: 15px; border-radius: 15px; margin-bottom: 15px; overflow-x: auto;">
@@ -118,21 +150,7 @@ async function compararPorCodigo() {
             <th>${info1.nombre}</th>
             <th>${info2.nombre}</th>
           </tr>
-          <tr>
-            <td>Azúcar</td>
-            <td>${info1.azucar}</td>
-            <td>${info2.azucar}</td>
-          </tr>
-          <tr>
-            <td>Calorías</td>
-            <td>${info1.calorias}</td>
-            <td>${info2.calorias}</td>
-          </tr>
-          <tr>
-            <td>Vitamina C</td>
-            <td>${info1.vitaminaC}</td>
-            <td>${info2.vitaminaC}</td>
-          </tr>
+          ${filasHTML}
         </table>
       </div>
     `;
