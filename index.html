@@ -46,14 +46,7 @@ function buscarJugo() {
 
   <section id="comparador" class="seccion">
     <h2>COMPARADOR</h2>
-    <div class="comparador-form">
-      <label for="codigo1">Código Jugo 1:</label>
-      <input type="text" id="codigo1" placeholder="Ej: 123">
-      <label for="codigo2">Código Jugo 2:</label>
-      <input type="text" id="codigo2" placeholder="Ej: 456">
-      <button onclick="compararPorCodigo()">Comparar</button>
-    </div>
-    <div id="resultado-comparador"></div>
+    <p>Selecciona dos jugos para comparar su información nutricional.</p>
   </section>
 
   <section id="logros" class="seccion">
@@ -62,103 +55,5 @@ function buscarJugo() {
   </section>
 
   <script src="javas.js"></script>
-  <script>
-// Datos de ejemplo: puedes agregar más jugos y datos reales
-const jugos = {
-  "123": { nombre: "Naranja", azucar: "8g", calorias: "40kcal", vitaminaC: "30mg" },
-  "456": { nombre: "Manzana", azucar: "10g", calorias: "45kcal", vitaminaC: "10mg" },
-  "789": { nombre: "Multifruta", azucar: "12g", calorias: "50kcal", vitaminaC: "20mg" }
-};
-
-async function compararPorCodigo() {
-  const cod1 = document.getElementById('codigo1').value.trim();
-  const cod2 = document.getElementById('codigo2').value.trim();
-  const resultado = document.getElementById('resultado-comparador');
-
-  if (!cod1 || !cod2) {
-    resultado.innerHTML = "<p style='color:red;'>Por favor, ingresa ambos códigos.</p>";
-    return;
-  }
-
-  resultado.innerHTML = "Buscando información...";
-
-  try {
-    // Pedir ambos productos en paralelo
-    const [res1, res2] = await Promise.all([
-      fetch(`https://world.openfoodfacts.org/api/v0/product/${cod1}.json`),
-      fetch(`https://world.openfoodfacts.org/api/v0/product/${cod2}.json`)
-    ]);
-    const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
-
-    // Verificar si ambos existen
-    if (data1.status !== 1 || data2.status !== 1) {
-      resultado.innerHTML = "<p style='color:red;'>Uno o ambos códigos no existen en la base de datos.</p>";
-      return;
-    }
-
-    // Adaptar los datos al formato esperado
-    const info1 = {
-      nombre: data1.product.product_name || 'Sin nombre',
-      azucar: data1.product.nutriments?.sugars_100g ? `${data1.product.nutriments.sugars_100g}g` : 'No disponible',
-      calorias: data1.product.nutriments?.['energy-kcal_100g'] ? `${data1.product.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
-      sodio: data1.product.nutriments?.sodium_100g ? `${data1.product.nutriments.sodium_100g}g` : 'No disponible',
-      carbohidratos: data1.product.nutriments?.carbohydrates_100g ? `${data1.product.nutriments.carbohydrates_100g}g` : 'No disponible',
-      grasas: data1.product.nutriments?.fat_100g ? `${data1.product.nutriments.fat_100g}g` : 'No disponible',
-      proteinas: data1.product.nutriments?.proteins_100g ? `${data1.product.nutriments.proteins_100g}g` : 'No disponible',
-      vitaminaC: data1.product.nutriments?.vitamin_c_100g ? `${data1.product.nutriments.vitamin_c_100g}mg` : 'No disponible'
-    };
-    const info2 = {
-      nombre: data2.product.product_name || 'Sin nombre',
-      azucar: data2.product.nutriments?.sugars_100g ? `${data2.product.nutriments.sugars_100g}g` : 'No disponible',
-      calorias: data2.product.nutriments?.['energy-kcal_100g'] ? `${data2.product.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
-      sodio: data2.product.nutriments?.sodium_100g ? `${data2.product.nutriments.sodium_100g}g` : 'No disponible',
-      carbohidratos: data2.product.nutriments?.carbohydrates_100g ? `${data2.product.nutriments.carbohydrates_100g}g` : 'No disponible',
-      grasas: data2.product.nutriments?.fat_100g ? `${data2.product.nutriments.fat_100g}g` : 'No disponible',
-      proteinas: data2.product.nutriments?.proteins_100g ? `${data2.product.nutriments.proteins_100g}g` : 'No disponible',
-      vitaminaC: data2.product.nutriments?.vitamin_c_100g ? `${data2.product.nutriments.vitamin_c_100g}mg` : 'No disponible'
-    };
-
-    // Crear un array de filas con los datos y ordenarlas alfabéticamente por el nombre del nutriente
-    const filas = [
-      { nombre: 'Azúcar', valor1: info1.azucar, valor2: info2.azucar },
-      { nombre: 'Calorías', valor1: info1.calorias, valor2: info2.calorias },
-      { nombre: 'Carbohidratos', valor1: info1.carbohidratos, valor2: info2.carbohidratos },
-      { nombre: 'Grasas', valor1: info1.grasas, valor2: info2.grasas },
-      { nombre: 'Proteínas', valor1: info1.proteinas, valor2: info2.proteinas },
-      { nombre: 'Sodio', valor1: info1.sodio, valor2: info2.sodio },
-      { nombre: 'Vitamina C', valor1: info1.vitaminaC, valor2: info2.vitaminaC }
-    ];
-    filas.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
-
-    // Construir el HTML de la tabla
-    let filasHTML = '';
-    for (const fila of filas) {
-      filasHTML += `
-        <tr>
-          <td>${fila.nombre}</td>
-          <td>${fila.valor1}</td>
-          <td>${fila.valor2}</td>
-        </tr>
-      `;
-    }
-
-    resultado.innerHTML = `
-      <div style="background-color: #FFD74F; padding: 15px; border-radius: 15px; margin-bottom: 15px; overflow-x: auto;">
-        <table border="1" style="margin-top:10px; width:100%; border-collapse:collapse; border-radius: 10px; overflow: hidden;">
-          <tr>
-            <th></th>
-            <th>${info1.nombre}</th>
-            <th>${info2.nombre}</th>
-          </tr>
-          ${filasHTML}
-        </table>
-      </div>
-    `;
-  } catch (error) {
-    resultado.innerHTML = `<p style='color:red;'>Error al buscar los productos. Intenta nuevamente.</p>`;
-  }
-}
-</script>
 </body>
-
 </html>
