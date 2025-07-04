@@ -280,6 +280,16 @@
                 font-size: 2em;
             }
         }
+        #resultadoComparador > div[style*="display:flex"] {
+    gap: 40px !important;
+    margin-bottom: 30px;
+}
+@media (max-width: 900px) {
+    #resultadoComparador > div[style*="display:flex"] {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+}
     </style>
 </head>
 <header>
@@ -293,6 +303,7 @@
             <p>Conoce la información nutricional de tu jugo favorito</p>
         </div>
 
+        <!-- ...existing code... -->
         <!-- Sección de búsqueda -->
         <div class="search-section" id="searchSection">
             <h2>Ingresa el código del producto</h2>
@@ -300,6 +311,29 @@
                 <input type="text" id="codigo" placeholder="Ej: 001, ABC123, etc." onkeypress="if(event.key==='Enter') buscarJugo()">
             </div>
             <button onclick="buscarJugo()" class="btn">ESCANEÁ AQUÍ</button>
+            <button onclick="mostrarComparador()" class="btn btn-escanear">Comparador</button>
+        </div> <!-- Cierre de search-section -->
+
+        <!-- Bloques fuera de search-section -->
+        <div id="comparadorSection" style="display:none; margin-top:30px;">
+            <h2>Compará dos jugos</h2>
+            <div class="input-group">
+                <input type="text" id="codigo1" placeholder="Código del primer jugo">
+            </div>
+            <div class="input-group">
+                <input type="text" id="codigo2" placeholder="Código del segundo jugo">
+            </div>
+            <button onclick="compararJugos()" class="btn btn-escanear">Comparar</button>
+        </div>
+        <div id="resultadoComparador" style="display:none; margin-top:30px;">
+            <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+                <div id="jugo1" style="flex:1 1 300px;"></div>
+                <div id="jugo2" style="flex:1 1 300px;"></div>
+            </div>
+            <div class="botones">
+                <button onclick="nuevoComparador()" class="btn btn-escanear">Comparar otros</button>
+                <a href="index.html" class="btn btn-volver">Volver al inicio</a>
+            </div>
         </div>
 
         <!-- Sección de resultados -->
@@ -564,6 +598,103 @@ function escanearOtro() {
     // Enfocar el input para facilitar la siguiente búsqueda
     document.getElementById('codigo').focus();
 }
+function mostrarComparador() {
+    document.getElementById('searchSection').style.display = 'none';
+    document.getElementById('resultadoContainer').style.display = 'none';
+    document.getElementById('comparadorSection').style.display = 'block';
+    document.getElementById('resultadoComparador').style.display = 'none';
+}
+
+async function compararJugos() {
+    const codigo1 = document.getElementById('codigo1').value.trim();
+    const codigo2 = document.getElementById('codigo2').value.trim();
+    if (!codigo1 || !codigo2) {
+        alert("Por favor, ingresa ambos códigos.");
+        return;
+    }
+    document.getElementById('comparadorSection').style.display = 'none';
+    document.getElementById('resultadoComparador').style.display = 'block';
+    document.getElementById('jugo1').innerHTML = '<div class="loading">Buscando primer jugo...</div>';
+    document.getElementById('jugo2').innerHTML = '<div class="loading">Buscando segundo jugo...</div>';
+
+    const jugo1 = await obtenerJugo(codigo1);
+    const jugo2 = await obtenerJugo(codigo2);
+
+    document.getElementById('jugo1').innerHTML = renderJugoComparador(jugo1, 1);
+    document.getElementById('jugo2').innerHTML = renderJugoComparador(jugo2, 2);
+}
+
+async function obtenerJugo(codigo) {
+    try {
+        const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${codigo}.json`);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        if (data.status === 1 && data.product) {
+            const producto = data.product;
+            return {
+                nombre: producto.product_name || 'Producto sin nombre',
+                marca: producto.brands || '',
+                azucar: producto.nutriments?.sugars_100g ? `${producto.nutriments.sugars_100g}g` : 'No disponible',
+                calorias: producto.nutriments?.['energy-kcal_100g'] ? `${producto.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
+                volumen: '100g',
+                tipo: producto.categories_tags?.includes('en:beverages') ? 'Bebida' : 'Producto',
+                ingredientes: producto.ingredients_text || 'No especificados'
+            };
+        } else {
+            return { nombre: 'Producto no encontrado', marca: `Código: ${codigo}`, azucar: '-', calorias: '-', volumen: '-', tipo: '-', ingredientes: '-' };
+        }
+    } catch (error) {
+        return { nombre: 'Error al cargar datos', marca: '', azucar: '-', calorias: '-', volumen: '-', tipo: '-', ingredientes: '-' };
+    }
+}
+
+function renderJugoComparador(jugo, n) {
+    const cucharadas = calcularCucharadas(jugo.azucar);
+    const recomendacion = darRecomendacion(jugo.azucar);
+    return `
+    <div class="producto-header">
+        <div class="producto-titulo">${jugo.nombre}</div>
+        <div class="producto-marca">${jugo.marca}</div>
+    </div>
+    <div class="nutricional-grid">
+        <div class="nutricional-card">
+            <h3>🍬 Azúcar</h3>
+            <div class="valor-grande">${jugo.azucar}</div>
+        </div>
+        <div class="nutricional-card">
+            <h3>🔥 Calorías</h3>
+            <div class="valor-grande">${jugo.calorias}</div>
+        </div>
+        <div class="nutricional-card">
+            <h3>📏 Volumen</h3>
+            <div class="valor-grande">${jugo.volumen}</div>
+        </div>
+        <div class="nutricional-card">
+            <h3>🥤 Tipo</h3>
+            <div class="valor-grande" style="font-size: 1.2em;">${jugo.tipo}</div>
+        </div>
+    </div>
+    <div class="cucharadas">
+        <h3>🥄 Equivalencia en Azúcar</h3>
+        <div class="valor-grande">${cucharadas} cucharadas</div>
+    </div>
+    <div class="recomendacion ${recomendacion.clase}">
+        ${recomendacion.texto}
+    </div>
+    <div class="ingredientes">
+        <h3>🔍 Ingredientes:</h3>
+        <p>${jugo.ingredientes}</p>
+    </div>
+    `;
+}
+
+function nuevoComparador() {
+    document.getElementById('codigo1').value = '';
+    document.getElementById('codigo2').value = '';
+    document.getElementById('comparadorSection').style.display = 'block';
+    document.getElementById('resultadoComparador').style.display = 'none';
+}
+
     </script>
 </body>
 </html>
