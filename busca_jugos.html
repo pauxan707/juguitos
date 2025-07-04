@@ -516,19 +516,24 @@ async function buscarJugo() {
 
         if (data.status === 1 && data.product) {
             const producto = data.product;
-            
             // Adaptar los datos de OpenFoodFacts al formato esperado
             const jugo = {
                 nombre: producto.product_name || 'Producto sin nombre',
                 marca: producto.brands || '',
                 azucar: producto.nutriments?.sugars_100g ? `${producto.nutriments.sugars_100g}g` : 'No disponible',
                 calorias: producto.nutriments?.['energy-kcal_100g'] ? `${producto.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
-                volumen: '100g', // OpenFoodFacts da valores por 100g
+                porcion: producto.serving_size || '100g',
                 tipo: producto.categories_tags?.includes('en:beverages') ? 'Bebida' : 'Producto',
                 ingredientes: producto.ingredients_text || 'No especificados'
             };
-            
             mostrarResultado(jugo);
+            // Guardar objeto completo en historialJugosInfo
+            let historial = JSON.parse(localStorage.getItem('historialJugosInfo')) || [];
+            // Evitar duplicados consecutivos
+            if (historial.length === 0 || historial[historial.length-1].nombre !== jugo.nombre) {
+                historial.push(jugo);
+                localStorage.setItem('historialJugosInfo', JSON.stringify(historial));
+            }
         } else {
             // Producto no encontrado
             document.getElementById('nombre').textContent = 'Producto no encontrado';
@@ -622,6 +627,16 @@ async function compararJugos() {
 
     document.getElementById('jugo1').innerHTML = renderJugoComparador(jugo1, 1);
     document.getElementById('jugo2').innerHTML = renderJugoComparador(jugo2, 2);
+
+    // Guardar ambos jugos completos en historialJugosInfo
+    let historial = JSON.parse(localStorage.getItem('historialJugosInfo')) || [];
+    if (jugo1.nombre && jugo1.nombre !== 'Producto no encontrado' && (historial.length === 0 || historial[historial.length-1].nombre !== jugo1.nombre)) {
+        historial.push(jugo1);
+    }
+    if (jugo2.nombre && jugo2.nombre !== 'Producto no encontrado' && (historial.length === 0 || historial[historial.length-1].nombre !== jugo2.nombre)) {
+        historial.push(jugo2);
+    }
+    localStorage.setItem('historialJugosInfo', JSON.stringify(historial));
 }
 
 async function obtenerJugo(codigo) {

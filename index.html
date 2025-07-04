@@ -19,8 +19,53 @@
       <button onclick="buscarJugo()">ESCANEÁ AQUÍ</button>
 <script>
 function buscarJugo() {
+    // Redirige directamente al escáner sin pedir nombre/código
     window.location.href = "busca_jugos.html";
 }
+
+function mostrarHistorialJugos() {
+    const historial = JSON.parse(localStorage.getItem('historialJugosInfo')) || [];
+    const ul = document.getElementById('historial-jugos');
+    if (ul) {
+        ul.innerHTML = '';
+        historial.forEach(jugo => {
+            const li = document.createElement('li');
+            li.textContent = jugo.nombre || jugo;
+            li.style.cursor = 'pointer';
+            li.onclick = function() {
+                mostrarInfoJugo(jugo);
+            };
+            ul.appendChild(li);
+        });
+    }
+}
+
+function mostrarInfoJugo(jugo) {
+    // Crea un modal simple con la información del jugo
+    let info = `<strong>${jugo.nombre || jugo}</strong><br>`;
+    if (jugo.marca) info += `<b>Marca:</b> ${jugo.marca}<br>`;
+    if (jugo.azucar) info += `<b>Azúcar:</b> ${jugo.azucar}<br>`;
+    if (jugo.calorias) info += `<b>Calorías:</b> ${jugo.calorias}<br>`;
+    if (jugo.porcion) info += `<b>Porción:</b> ${jugo.porcion}<br>`;
+    if (jugo.tipo) info += `<b>Tipo:</b> ${jugo.tipo}<br>`;
+    if (jugo.ingredientes) info += `<b>Ingredientes:</b> ${jugo.ingredientes}<br>`;
+    // Modal básico
+    const modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100vw';
+    modal.style.height = '100vh';
+    modal.style.background = 'rgba(0,0,0,0.5)';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.zIndex = '9999';
+    modal.innerHTML = `<div style="background:#fff;padding:30px 40px;border-radius:12px;max-width:90vw;max-height:80vh;overflow:auto;box-shadow:0 8px 32px #0003;text-align:left;">${info}<br><button onclick='this.parentNode.parentNode.remove()' style='margin-top:20px;padding:8px 20px;border-radius:8px;background:#003fa3;color:#fff;border:none;cursor:pointer;'>Cerrar</button></div>`;
+    document.body.appendChild(modal);
+}
+
+document.addEventListener('DOMContentLoaded', mostrarHistorialJugos);
 </script>
     </div>
     <div class="textoprincipal-image">
@@ -30,7 +75,7 @@ function buscarJugo() {
 
   <section class="accesorios">
   <div class="lista" onclick="mostrarSeccion('biblioteca'); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">BIBLIOTECA</div>
-  <div class="lista" onclick="mostrarSeccion('comparador'); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">COMPARADOR</div>
+  <div class="lista" onclick="mostrarSeccion('comparador'); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">HISTORIAL</div>
   <div class="lista" onclick="mostrarSeccion('logros'); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">LOGROS</div>
 </section>
 
@@ -45,8 +90,8 @@ function buscarJugo() {
   </section>
 
   <section id="comparador" class="seccion">
-    <h2>COMPARADOR</h2>
-    <p>Selecciona dos jugos para comparar su información nutricional.</p>
+    <h2>HISTORIAL DE JUGOS ESCANEADOS</h2>
+    <ul id="historial-jugos"></ul>
   </section>
 
   <section id="logros" class="seccion">

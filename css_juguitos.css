@@ -121,33 +121,37 @@ header .button:hover {
 
 .accesorios {
     display: flex;
-    justify-content: space-around;
-    padding: 40px 20px;
-    background: var(--beige);
-    flex-wrap: wrap;
-    gap: 20px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin: 40px 0 30px 0;
 }
 
 /* Tu código base mantenido */
 .lista {
-    background: var(--blanco);
-    color: var(--verde);
-    border-radius: 25px;
-    padding: 15px 30px;
-    font-size: 1.1rem;
+    width: 320px;
+    max-width: 90vw;
+    background: #003fa3;
+    color: #fff;
+    font-size: 1.3em;
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    padding: 18px 0;
+    border-radius: 12px;
+    margin: 0 auto;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
+    transition: background 0.2s, transform 0.2s;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 12px #003fa31a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.lista:hover, .lista.activa {
-    background: linear-gradient(45deg, var(--rosa), var(--rosa-oscuro));
-    color: var(--negro);
-    border-color: var(--verde);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+.lista:hover {
+    background: #0050d6;
+    transform: translateY(-2px) scale(1.03);
 }
 
 .seccion {
@@ -258,7 +262,7 @@ header .button:hover {
     
     .accesorios {
         flex-direction: column;
-        align-items: center;
+        gap: 18px;
     }
     
     .lista {
