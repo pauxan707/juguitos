@@ -47,7 +47,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -127,35 +127,58 @@
         }
 
         .resultado-container {
-            padding: 30px;
+            padding: 40px;
             display: none;
         }
 
         .producto-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
-        }
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 30px;
+    background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
 
-        .producto-titulo {
-            font-size: 2em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
+.producto-info {
+    flex: 1;
+}
 
-        .producto-marca {
-            font-size: 1.2em;
-            color: #666;
-        }
+.producto-imagen {
+    flex-shrink: 0;
+}
 
+.producto-imagen img {
+    width: 150px;
+    height: 200px;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background: white;
+    padding: 10px;
+}
+
+.producto-imagen-placeholder {
+    width: 150px;
+    height: 200px;
+    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 14px;
+    text-align: center;
+    border: 2px dashed #dee2e6;
+}
         .nutricional-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
 
         .nutricional-card {
@@ -174,7 +197,7 @@
 
         .nutricional-card h3 {
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: 1.1em;
         }
 
@@ -267,6 +290,11 @@
         }
 
         @media (max-width: 768px) {
+            
+            body {
+                padding: 20px 10px; /* Menos padding en móviles */
+            }
+            
             .container {
                 margin: 10px;
                 border-radius: 15px;
@@ -274,10 +302,19 @@
             
             .nutricional-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;          /* Menos gap en móviles */
             }
             
             .header h1 {
                 font-size: 2em;
+            }
+            
+            .header {
+                padding: 30px 20px; /* Ajustar padding en móviles */
+            }
+            
+            .search-section, .resultado-container {
+                padding: 25px 20px; /* Ajustar padding en móviles */
             }
         }
         #resultadoComparador > div[style*="display:flex"] {
@@ -334,6 +371,7 @@
                 <button onclick="nuevoComparador()" class="btn btn-escanear">Comparar otros</button>
                 <a href="index.html" class="btn btn-volver">Volver al inicio</a>
             </div>
+            <div id="comparadorRecomendacion" style="margin-top:30px; font-size:1.2em; font-weight:bold; text-align:center;"></div>
         </div>
 
         <!-- Sección de resultados -->
@@ -353,7 +391,7 @@
                     <div class="valor-grande" id="calorias">-</div>
                 </div>
                 <div class="nutricional-card">
-                    <h3>📏 Volumen</h3>
+                    <h3>📏 Volumen (equivale a medio vaso)</h3>
                     <div class="valor-grande" id="volumen">-</div>
                 </div>
                 <div class="nutricional-card">
@@ -389,82 +427,82 @@
 
     <script>
      // Función para calcular cucharadas de azúcar
-function calcularCucharadas(azucarTexto) {
-    const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
-    if (!match) return "N/A";
-    
-    const gramos = parseFloat(match[1]);
-    if (isNaN(gramos)) return "N/A";
-    
-    // 1 cucharadita = 5g de azúcar (15g = 3 cucharaditas)
-    const cucharaditas = (gramos / 5).toFixed(1);
-    return cucharaditas;
-}
+        function calcularCucharadas(azucarTexto) {
+            const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
+            if (!match) return "N/A";
+            
+            const gramos = parseFloat(match[1]);
+            if (isNaN(gramos)) return "N/A";
+            
+            // 1 cucharadita = 5g de azúcar (15g = 3 cucharaditas)
+            const cucharaditas = (gramos / 5).toFixed(1);
+            return cucharaditas;
+        }
 
-// Función para dar recomendación nutricional general
-function darRecomendacion(azucarTexto) {
-    const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
-    if (!match) {
-        return {
-            texto: "⚠️ No se pudo evaluar el contenido de azúcar",
-            clase: "moderada"
-        };
-    }
-    
-    const gramos = parseFloat(match[1]);
-    
-    if (gramos <= 10) {
-        return {
-            texto: "✅ BUENA OPCIÓN: Bajo contenido de azúcar",
-            clase: "buena"
-        };
-    } else if (gramos <= 25) {
-        return {
-            texto: "⚠️ CONSUMO MODERADO: Contenido medio de azúcar",
-            clase: "moderada"
-        };
-    } else {
-        return {
-            texto: "❌ ALTO EN AZÚCAR: Consumir ocasionalmente",
-            clase: "alta"
-        };
-    }
-}
+        // Función para dar recomendación nutricional general
+        function darRecomendacion(azucarTexto) {
+            const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
+            if (!match) {
+                return {
+                    texto: "⚠️ No se pudo evaluar el contenido de azúcar",
+                    clase: "moderada"
+                };
+            }
+            
+            const gramos = parseFloat(match[1]);
+            
+            if (gramos <= 10) {
+                return {
+                    texto: "✅ BUENA OPCIÓN: Bajo contenido de azúcar",
+                    clase: "buena"
+                };
+            } else if (gramos <= 25) {
+                return {
+                    texto: "⚠️ CONSUMO MODERADO: Contenido medio de azúcar",
+                    clase: "moderada"
+                };
+            } else {
+                return {
+                    texto: "❌ ALTO EN AZÚCAR: Consumir ocasionalmente",
+                    clase: "alta"
+                };
+            }
+        }
 
-// Función específica para recomendaciones en niños
-function darRecomendacionNinos(azucarTexto) {
-    const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
-    if (!match) {
-        return {
-            texto: "⚠️ No se pudo evaluar el contenido de azúcar",
-            clase: "moderada"
-        };
-    }
-    
-    const gramos = parseFloat(match[1]);
-    const cucharaditas = gramos / 5;
-    
-    // Límite recomendado para niños: 15g (3 cucharaditas) al día
-    if (gramos <= 6) {
-        return {
-            texto: `✅ EXCELENTE PARA NIÑOS: Solo ${cucharaditas.toFixed(1)} cucharadita(s)`,
-            clase: "buena",
-            porcentajeLimite: ((gramos / 15) * 100).toFixed(0)
-        };
-    } else if (gramos <= 15) {
-        return {
-            texto: `⚠️ ACEPTABLE PARA NIÑOS: ${cucharaditas.toFixed(1)} cucharadita(s) - cerca del límite diario`,
-            clase: "moderada",
-            porcentajeLimite: ((gramos / 15) * 100).toFixed(0)
-        };
-    } else {
-        return {
-            texto: `❌ EXCEDE LÍMITE INFANTIL: ${cucharaditas.toFixed(1)} cucharadita(s) - supera la recomendación diaria`,
-            clase: "alta",
-            porcentajeLimite: ((gramos / 15) * 100).toFixed(0)
-        };
-    }
-}
+        // Función específica para recomendaciones en niños
+        function darRecomendacionNinos(azucarTexto) {
+            const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
+            if (!match) {
+                return {
+                    texto: "⚠️ No se pudo evaluar el contenido de azúcar",
+                    clase: "moderada"
+                };
+            }
+            
+            const gramos = parseFloat(match[1]);
+            const cucharaditas = gramos / 5;
+            
+            // Límite recomendado para niños: 15g (3 cucharaditas) al día
+            if (gramos <= 6) {
+                return {
+                    texto: `✅ EXCELENTE PARA NIÑOS: Solo ${cucharaditas.toFixed(1)} cucharadita(s)`,
+                    clase: "buena",
+                    porcentajeLimite: ((gramos / 15) * 100).toFixed(0)
+                };
+            } else if (gramos <= 15) {
+                return {
+                    texto: `⚠️ ACEPTABLE PARA NIÑOS: ${cucharaditas.toFixed(1)} cucharadita(s) - cerca del límite diario`,
+                    clase: "moderada",
+                    porcentajeLimite: ((gramos / 15) * 100).toFixed(0)
+                };
+            } else {
+                return {
+                    texto: `❌ EXCEDE LÍMITE INFANTIL: ${cucharaditas.toFixed(1)} cucharadita(s) - supera la recomendación diaria`,
+                    clase: "alta",
+                    porcentajeLimite: ((gramos / 15) * 100).toFixed(0)
+                };
+            }
+        }
 
         // Función para mostrar los resultados
         function mostrarResultado(jugo) {
@@ -491,53 +529,92 @@ function darRecomendacionNinos(azucarTexto) {
             document.getElementById('resultadoContainer').style.display = 'block';
         }
 
-        // Función para buscar jugo por código
-          // Función para buscar jugo por código - VERSIÓN ARREGLADA
-async function buscarJugo() {
-    const codigo = document.getElementById("codigo").value.trim();
-    if (!codigo) {
-        alert("Por favor, ingresa un código.");
-        return;
-    }
-
-    // Mostrar loading
-    document.getElementById('nombre').textContent = 'Buscando producto...';
-    document.getElementById('searchSection').style.display = 'none';
-    document.getElementById('resultadoContainer').style.display = 'block';
-
-    try {
-        const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${codigo}.json`);
-
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const data = await res.json();
-
-        if (data.status === 1 && data.product) {
-            const producto = data.product;
-            // Adaptar los datos de OpenFoodFacts al formato esperado
-            const jugo = {
-                nombre: producto.product_name || 'Producto sin nombre',
-                marca: producto.brands || '',
-                azucar: producto.nutriments?.sugars_100g ? `${producto.nutriments.sugars_100g}g` : 'No disponible',
-                calorias: producto.nutriments?.['energy-kcal_100g'] ? `${producto.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
-                porcion: producto.serving_size || '100g',
-                tipo: producto.categories_tags?.includes('en:beverages') ? 'Bebida' : 'Producto',
-                ingredientes: producto.ingredients_text || 'No especificados'
-            };
-            mostrarResultado(jugo);
-            // Guardar objeto completo en historialJugosInfo
-            let historial = JSON.parse(localStorage.getItem('historialJugosInfo')) || [];
-            // Evitar duplicados consecutivos
-            if (historial.length === 0 || historial[historial.length-1].nombre !== jugo.nombre) {
-                historial.push(jugo);
-                localStorage.setItem('historialJugosInfo', JSON.stringify(historial));
+        // Función para buscar jugo por código - VERSIÓN ARREGLADA
+        async function buscarJugo() {
+            const codigo = document.getElementById("codigo").value.trim();
+            if (!codigo) {
+                alert("Por favor, ingresa un código.");
+                return;
             }
-        } else {
-            // Producto no encontrado
-            document.getElementById('nombre').textContent = 'Producto no encontrado';
-            document.getElementById('marca').textContent = `Código: ${codigo}`;
+
+            // Mostrar loading
+            document.getElementById('nombre').textContent = 'Buscando producto...';
+            document.getElementById('searchSection').style.display = 'none';
+            document.getElementById('resultadoContainer').style.display = 'block';
+
+            try {
+                const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${codigo}.json`);
+
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                if (data.status === 1 && data.product) {
+                    const producto = data.product;
+                    // Adaptar los datos de OpenFoodFacts al formato esperado
+                    const jugo = {
+                        nombre: producto.product_name || 'Producto sin nombre',
+                        marca: producto.brands || '',
+                        azucar: producto.nutriments?.sugars_100g ? `${producto.nutriments.sugars_100g}g` : 'No disponible',
+                        calorias: producto.nutriments?.['energy-kcal_100g'] ? `${producto.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
+                        volumen: producto.serving_size || '100g',
+                        tipo: producto.categories_tags?.includes('en:beverages') ? 'Bebida' : 'Producto',
+                        ingredientes: producto.ingredients_text || 'No especificados'
+                    };
+                    mostrarResultado(jugo);
+                } else {
+                    // Producto no encontrado
+                    document.getElementById('nombre').textContent = 'Producto no encontrado';
+                    document.getElementById('marca').textContent = `Código: ${codigo}`;
+                    document.getElementById('azucar').textContent = '-';
+                    document.getElementById('calorias').textContent = '-';
+                    document.getElementById('volumen').textContent = '-';
+                    document.getElementById('tipo').textContent = '-';
+                    document.getElementById('ingredientes').textContent = '-';
+                    document.getElementById('cucharadas').textContent = '- cucharadas';
+                    
+                    const recomendacionEl = document.getElementById('recomendacion');
+                    recomendacionEl.innerHTML = `
+                        <div class="error">
+                            ❌ No se encontró ningún producto con el código "${codigo}".<br>
+                            Verifica que el código esté correcto.
+                        </div>
+                    `;
+                    recomendacionEl.className = 'recomendacion';
+                }
+            } catch (error) {
+                console.error("Error al buscar el producto:", error);
+                document.getElementById('nombre').textContent = 'Error al cargar datos';
+                document.getElementById('marca').textContent = '';
+                document.getElementById('azucar').textContent = '-';
+                document.getElementById('calorias').textContent = '-';
+                document.getElementById('volumen').textContent = '-';
+                document.getElementById('tipo').textContent = '-';
+                document.getElementById('ingredientes').textContent = '-';
+                document.getElementById('cucharadas').textContent = '- cucharadas';
+                
+                const recomendacionEl = document.getElementById('recomendacion');
+                recomendacionEl.innerHTML = `
+                    <div class="error">
+                        ❌ Error al cargar los datos.<br>
+                        Verifica tu conexión o intenta nuevamente más tarde.<br>
+                        Error: ${error.message}
+                    </div>
+                `;
+                recomendacionEl.className = 'recomendacion';
+            }
+        }  
+
+        // Función para escanear otro producto - VERSIÓN ARREGLADA
+        function escanearOtro() {
+            // Limpiar el input
+            document.getElementById('codigo').value = '';
+            
+            // Limpiar todos los campos de resultado
+            document.getElementById('nombre').textContent = 'Cargando...';
+            document.getElementById('marca').textContent = '';
             document.getElementById('azucar').textContent = '-';
             document.getElementById('calorias').textContent = '-';
             document.getElementById('volumen').textContent = '-';
@@ -545,171 +622,148 @@ async function buscarJugo() {
             document.getElementById('ingredientes').textContent = '-';
             document.getElementById('cucharadas').textContent = '- cucharadas';
             
+            // Limpiar recomendación
             const recomendacionEl = document.getElementById('recomendacion');
-            recomendacionEl.innerHTML = `
-                <div class="error">
-                    ❌ No se encontró ningún producto con el código "${codigo}".<br>
-                    Verifica que el código esté correcto.
-                </div>
-            `;
+            recomendacionEl.textContent = 'Evaluando producto...';
             recomendacionEl.className = 'recomendacion';
+            
+            // Mostrar sección de búsqueda y ocultar resultados
+            document.getElementById('searchSection').style.display = 'block';
+            document.getElementById('resultadoContainer').style.display = 'none';
+            
+            // Enfocar el input para facilitar la siguiente búsqueda
+            document.getElementById('codigo').focus();
         }
-    } catch (error) {
-        console.error("Error al buscar el producto:", error);
-        document.getElementById('nombre').textContent = 'Error al cargar datos';
-        document.getElementById('marca').textContent = '';
-        document.getElementById('azucar').textContent = '-';
-        document.getElementById('calorias').textContent = '-';
-        document.getElementById('volumen').textContent = '-';
-        document.getElementById('tipo').textContent = '-';
-        document.getElementById('ingredientes').textContent = '-';
-        document.getElementById('cucharadas').textContent = '- cucharadas';
-        
-        const recomendacionEl = document.getElementById('recomendacion');
-        recomendacionEl.innerHTML = `
-            <div class="error">
-                ❌ Error al cargar los datos.<br>
-                Verifica tu conexión o intenta nuevamente más tarde.<br>
-                Error: ${error.message}
+
+        function mostrarComparador() {
+            document.getElementById('searchSection').style.display = 'none';
+            document.getElementById('resultadoContainer').style.display = 'none';
+            document.getElementById('comparadorSection').style.display = 'block';
+            document.getElementById('resultadoComparador').style.display = 'none';
+        }
+
+        function volverInicio() {
+            document.getElementById('searchSection').style.display = 'block';
+            document.getElementById('resultadoContainer').style.display = 'none';
+            document.getElementById('comparadorSection').style.display = 'none';
+            document.getElementById('resultadoComparador').style.display = 'none';
+            document.getElementById('codigo').value = '';
+            document.getElementById('codigo').focus();
+        }
+
+        async function compararJugos() {
+            const codigo1 = document.getElementById('codigo1').value.trim();
+            const codigo2 = document.getElementById('codigo2').value.trim();
+            if (!codigo1 || !codigo2) {
+                alert("Por favor, ingresa ambos códigos.");
+                return;
+            }
+            document.getElementById('comparadorSection').style.display = 'none';
+            document.getElementById('resultadoComparador').style.display = 'block';
+            document.getElementById('jugo1').innerHTML = '<div class="loading">Buscando primer jugo...</div>';
+            document.getElementById('jugo2').innerHTML = '<div class="loading">Buscando segundo jugo...</div>';
+
+            const jugo1 = await obtenerJugo(codigo1);
+            const jugo2 = await obtenerJugo(codigo2);
+
+            document.getElementById('jugo1').innerHTML = renderJugoComparador(jugo1, 1);
+            document.getElementById('jugo2').innerHTML = renderJugoComparador(jugo2, 2);
+
+            // *** CÓDIGO DE COMPARACIÓN MOVIDO AQUÍ ***
+            // Comparar azúcar y mostrar recomendación
+            const azucar1 = parseFloat(jugo1.azucar);
+            const azucar2 = parseFloat(jugo2.azucar);
+
+            let texto = '';
+            if (!isNaN(azucar1) && !isNaN(azucar2)) {
+                if (azucar1 < azucar2) {
+                    texto = `✅ <b>${jugo1.nombre}</b> es la mejor opción porque tiene menos azúcar.`;
+                } else if (azucar2 < azucar1) {
+                    texto = `✅ <b>${jugo2.nombre}</b> es la mejor opción porque tiene menos azúcar.`;
+                } else {
+                    texto = `⚖️ Ambos productos tienen la misma cantidad de azúcar.`;
+                }
+            } else {
+                texto = `ℹ️ No se pudo comparar el contenido de azúcar de ambos productos.`;
+            }
+            document.getElementById('comparadorRecomendacion').innerHTML = texto;
+        }
+
+        async function obtenerJugo(codigo) {
+            try {
+                const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${codigo}.json`);
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                const data = await res.json();
+                if (data.status === 1 && data.product) {
+                    const producto = data.product;
+                    return {
+                        nombre: producto.product_name || 'Producto sin nombre',
+                        marca: producto.brands || '',
+                        azucar: producto.nutriments?.sugars_100g ? `${producto.nutriments.sugars_100g}g` : 'No disponible',
+                        calorias: producto.nutriments?.['energy-kcal_100g'] ? `${producto.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
+                        volumen: '100g',
+                        tipo: producto.categories_tags?.includes('en:beverages') ? 'Bebida' : 'Producto',
+                        ingredientes: producto.ingredients_text || 'No especificados'
+                    };
+                } else {
+                    return { nombre: 'Producto no encontrado', marca: `Código: ${codigo}`, azucar: '-', calorias: '-', volumen: '-', tipo: '-', ingredientes: '-' };
+                }
+            } catch (error) {
+                return { nombre: 'Error al cargar datos', marca: '', azucar: '-', calorias: '-', volumen: '-', tipo: '-', ingredientes: '-' };
+            }
+        }
+
+        function renderJugoComparador(jugo, n) {
+            const cucharadas = calcularCucharadas(jugo.azucar);
+            const recomendacion = darRecomendacion(jugo.azucar);
+            return `
+            <div class="producto-header">
+                <div class="producto-titulo">${jugo.nombre}</div>
+                <div class="producto-marca">${jugo.marca}</div>
             </div>
-        `;
-        recomendacionEl.className = 'recomendacion';
-    }
-}  
-// Función para escanear otro producto - VERSIÓN ARREGLADA
-function escanearOtro() {
-    // Limpiar el input
-    document.getElementById('codigo').value = '';
-    
-    // Limpiar todos los campos de resultado
-    document.getElementById('nombre').textContent = 'Cargando...';
-    document.getElementById('marca').textContent = '';
-    document.getElementById('azucar').textContent = '-';
-    document.getElementById('calorias').textContent = '-';
-    document.getElementById('volumen').textContent = '-';
-    document.getElementById('tipo').textContent = '-';
-    document.getElementById('ingredientes').textContent = '-';
-    document.getElementById('cucharadas').textContent = '- cucharadas';
-    
-    // Limpiar recomendación
-    const recomendacionEl = document.getElementById('recomendacion');
-    recomendacionEl.textContent = 'Evaluando producto...';
-    recomendacionEl.className = 'recomendacion';
-    
-    // Mostrar sección de búsqueda y ocultar resultados
-    document.getElementById('searchSection').style.display = 'block';
-    document.getElementById('resultadoContainer').style.display = 'none';
-    
-    // Enfocar el input para facilitar la siguiente búsqueda
-    document.getElementById('codigo').focus();
-}
-function mostrarComparador() {
-    document.getElementById('searchSection').style.display = 'none';
-    document.getElementById('resultadoContainer').style.display = 'none';
-    document.getElementById('comparadorSection').style.display = 'block';
-    document.getElementById('resultadoComparador').style.display = 'none';
-}
-
-async function compararJugos() {
-    const codigo1 = document.getElementById('codigo1').value.trim();
-    const codigo2 = document.getElementById('codigo2').value.trim();
-    if (!codigo1 || !codigo2) {
-        alert("Por favor, ingresa ambos códigos.");
-        return;
-    }
-    document.getElementById('comparadorSection').style.display = 'none';
-    document.getElementById('resultadoComparador').style.display = 'block';
-    document.getElementById('jugo1').innerHTML = '<div class="loading">Buscando primer jugo...</div>';
-    document.getElementById('jugo2').innerHTML = '<div class="loading">Buscando segundo jugo...</div>';
-
-    const jugo1 = await obtenerJugo(codigo1);
-    const jugo2 = await obtenerJugo(codigo2);
-
-    document.getElementById('jugo1').innerHTML = renderJugoComparador(jugo1, 1);
-    document.getElementById('jugo2').innerHTML = renderJugoComparador(jugo2, 2);
-
-    // Guardar ambos jugos completos en historialJugosInfo
-    let historial = JSON.parse(localStorage.getItem('historialJugosInfo')) || [];
-    if (jugo1.nombre && jugo1.nombre !== 'Producto no encontrado' && (historial.length === 0 || historial[historial.length-1].nombre !== jugo1.nombre)) {
-        historial.push(jugo1);
-    }
-    if (jugo2.nombre && jugo2.nombre !== 'Producto no encontrado' && (historial.length === 0 || historial[historial.length-1].nombre !== jugo2.nombre)) {
-        historial.push(jugo2);
-    }
-    localStorage.setItem('historialJugosInfo', JSON.stringify(historial));
-}
-
-async function obtenerJugo(codigo) {
-    try {
-        const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${codigo}.json`);
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        const data = await res.json();
-        if (data.status === 1 && data.product) {
-            const producto = data.product;
-            return {
-                nombre: producto.product_name || 'Producto sin nombre',
-                marca: producto.brands || '',
-                azucar: producto.nutriments?.sugars_100g ? `${producto.nutriments.sugars_100g}g` : 'No disponible',
-                calorias: producto.nutriments?.['energy-kcal_100g'] ? `${producto.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
-                volumen: '100g',
-                tipo: producto.categories_tags?.includes('en:beverages') ? 'Bebida' : 'Producto',
-                ingredientes: producto.ingredients_text || 'No especificados'
-            };
-        } else {
-            return { nombre: 'Producto no encontrado', marca: `Código: ${codigo}`, azucar: '-', calorias: '-', volumen: '-', tipo: '-', ingredientes: '-' };
+            <div class="nutricional-grid">
+                <div class="nutricional-card">
+                    <h3>🍬 Azúcar</h3>
+                    <div class="valor-grande">${jugo.azucar}</div>
+                </div>
+                <div class="nutricional-card">
+                    <h3>🔥 Calorías</h3>
+                    <div class="valor-grande">${jugo.calorias}</div>
+                </div>
+                <div class="nutricional-card">
+                    <h3>📏 Volumen</h3>
+                    <div class="valor-grande">${jugo.volumen}</div>
+                </div>
+                <div class="nutricional-card">
+                    <h3>🥤 Tipo</h3>
+                    <div class="valor-grande" style="font-size: 1.2em;">${jugo.tipo}</div>
+                </div>
+            </div>
+            <div class="cucharadas">
+                <h3>🥄 Equivalencia en Azúcar</h3>
+                <div class="valor-grande">${cucharadas} cucharadas</div>
+            </div>
+            <div class="recomendacion ${recomendacion.clase}">
+                ${recomendacion.texto}
+            </div>
+            <div class="ingredientes">
+                <h3>🔍 Ingredientes:</h3>
+                <p>${jugo.ingredientes}</p>
+            </div>
+            `;
         }
-    } catch (error) {
-        return { nombre: 'Error al cargar datos', marca: '', azucar: '-', calorias: '-', volumen: '-', tipo: '-', ingredientes: '-' };
-    }
-}
 
-function renderJugoComparador(jugo, n) {
-    const cucharadas = calcularCucharadas(jugo.azucar);
-    const recomendacion = darRecomendacion(jugo.azucar);
-    return `
-    <div class="producto-header">
-        <div class="producto-titulo">${jugo.nombre}</div>
-        <div class="producto-marca">${jugo.marca}</div>
-    </div>
-    <div class="nutricional-grid">
-        <div class="nutricional-card">
-            <h3>🍬 Azúcar</h3>
-            <div class="valor-grande">${jugo.azucar}</div>
-        </div>
-        <div class="nutricional-card">
-            <h3>🔥 Calorías</h3>
-            <div class="valor-grande">${jugo.calorias}</div>
-        </div>
-        <div class="nutricional-card">
-            <h3>📏 Volumen</h3>
-            <div class="valor-grande">${jugo.volumen}</div>
-        </div>
-        <div class="nutricional-card">
-            <h3>🥤 Tipo</h3>
-            <div class="valor-grande" style="font-size: 1.2em;">${jugo.tipo}</div>
-        </div>
-    </div>
-    <div class="cucharadas">
-        <h3>🥄 Equivalencia en Azúcar</h3>
-        <div class="valor-grande">${cucharadas} cucharadas</div>
-    </div>
-    <div class="recomendacion ${recomendacion.clase}">
-        ${recomendacion.texto}
-    </div>
-    <div class="ingredientes">
-        <h3>🔍 Ingredientes:</h3>
-        <p>${jugo.ingredientes}</p>
-    </div>
-    `;
-}
+        function nuevoComparador() {
+            document.getElementById('codigo1').value = '';
+            document.getElementById('codigo2').value = '';
+            document.getElementById('comparadorSection').style.display = 'block';
+            document.getElementById('resultadoComparador').style.display = 'none';
+        }
 
-function nuevoComparador() {
-    document.getElementById('codigo1').value = '';
-    document.getElementById('codigo2').value = '';
-    document.getElementById('comparadorSection').style.display = 'block';
-    document.getElementById('resultadoComparador').style.display = 'none';
-}
-
+        // Enfocar el input al cargar la página
+        window.addEventListener('load', function() {
+            document.getElementById('codigo').focus();
+        });
     </script>
 </body>
 </html>
