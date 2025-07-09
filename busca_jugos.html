@@ -388,111 +388,225 @@
     </div>
 
     <script>
-     // Función para calcular cucharadas de azúcar
+    // Función para extraer el número de una cadena (ej: "500ml" -> 500)
+function extraerNumero(texto) {
+    if (!texto) return null;
+    const match = texto.toString().match(/(\d+(?:\.\d+)?)/);
+    return match ? parseFloat(match[1]) : null;
+}
+
+// Función para obtener volumen en ml
+function obtenerVolumenEnMl(producto) {
+    let volumen = null;
+    let unidad = 'ml';
+    
+    // Buscar en quantity primero
+    if (producto.quantity) {
+        const cantidad = extraerNumero(producto.quantity);
+        if (cantidad) {
+            volumen = cantidad;
+            // Detectar unidad
+            if (producto.quantity.toLowerCase().includes('l') && !producto.quantity.toLowerCase().includes('ml')) {
+                unidad = 'L';
+                volumen = cantidad * 1000; // Convertir a ml
+            }
+        }
+    }
+    
+    // Si no encontró, buscar en serving_size
+    if (!volumen && producto.serving_size) {
+        const cantidad = extraerNumero(producto.serving_size);
+        if (cantidad) {
+            volumen = cantidad;
+            if (producto.serving_size.toLowerCase().includes('l') && !producto.serving_size.toLowerCase().includes('ml')) {
+                unidad = 'L';
+                volumen = cantidad * 1000;
+            }
+        }
+    }
+    
+    // Valor por defecto
+    if (!volumen) {
+        volumen = 100;
+        unidad = 'ml';
+    }
+    
+    return { volumen, unidad, original: volumen };
+}
+
+// Función para calcular azúcar total del envase
+function calcularAzucarTotal(azucarPor100ml, volumenTotal) {
+    const azucarNum = extraerNumero(azucarPor100ml);
+    if (!azucarNum || !volumenTotal) return null;
+    
+    return (azucarNum * volumenTotal / 100).toFixed(1);
+}
+
+// Función para calcular cucharadas por 100ml
+function calcularCucharadasPor100ml(azucarTexto) {
+    // Buscar el azúcar por 100ml (segundo número entre paréntesis)
+    const match = azucarTexto.match(/\((\d+(?:\.\d+)?)g\/100ml\)/);
+    if (!match) {
+        // Si no hay formato con paréntesis, buscar solo número
+        const simpleMatch = azucarTexto.match(/(\d+(?:\.\d+)?)/);
+        if (!simpleMatch) return "N/A";
+        const gramos = parseFloat(simpleMatch[1]);
+        return isNaN(gramos) ? "N/A" : (gramos / 5).toFixed(1);
+    }
+    
+    const gramosPor100ml = parseFloat(match[1]);
+    if (isNaN(gramosPor100ml)) return "N/A";
+    
+    // 1 cucharadita = 5g de azúcar
+    const cucharaditas = (gramosPor100ml / 5).toFixed(1);
+    return cucharaditas;
+}
+
+// Función para extraer azúcar por 100ml del texto
+function extraerAzucarPor100ml(azucarTexto) {
+    // Buscar el azúcar por 100ml (segundo número entre paréntesis)
+    const match = azucarTexto.match(/\((\d+(?:\.\d+)?)g\/100ml\)/);
+    if (match) {
+        return parseFloat(match[1]);
+    }
+    
+    // Si no hay formato con paréntesis, buscar solo número
+    const simpleMatch = azucarTexto.match(/(\d+(?:\.\d+)?)/);
+    if (simpleMatch) {
+        return parseFloat(simpleMatch[1]);
+    }
+    
+    return null;
+}
+
+// Función para calcular cucharadas de azúcar - ACTUALIZADA
 function calcularCucharadas(azucarTexto) {
+    // Buscar el primer número (azúcar total)
     const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
     if (!match) return "N/A";
     
     const gramos = parseFloat(match[1]);
     if (isNaN(gramos)) return "N/A";
     
-    // 1 cucharadita = 5g de azúcar (15g = 3 cucharaditas)
+    // 1 cucharadita = 5g de azúcar
     const cucharaditas = (gramos / 5).toFixed(1);
     return cucharaditas;
 }
 
-// Función para dar recomendación nutricional general
+// Función para dar recomendación nutricional general - ACTUALIZADA PARA 100ML
 function darRecomendacion(azucarTexto) {
-    const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
-    if (!match) {
+    // Extraer azúcar por 100ml
+    const gramosPor100ml = extraerAzucarPor100ml(azucarTexto);
+    
+    if (!gramosPor100ml && gramosPor100ml !== 0) {
         return {
             texto: "⚠️ No se pudo evaluar el contenido de azúcar",
             clase: "moderada"
         };
     }
     
-    const gramos = parseFloat(match[1]);
+    const cucharaditasPor100ml = (gramosPor100ml / 5).toFixed(1);
     
-    if (gramos <= 10) {
+    // Recomendación basada en azúcar por 100ml (medio vaso)
+    if (gramosPor100ml <= 2.5) {
         return {
-            texto: "✅ BUENA OPCIÓN: Bajo contenido de azúcar",
+            texto: `✅ EXCELENTE OPCIÓN: Muy bajo en azúcar (${cucharaditasPor100ml} cucharaditas por medio vaso de 100ml)`,
             clase: "buena"
         };
-    } else if (gramos <= 25) {
+    } else if (gramosPor100ml <= 5) {
         return {
-            texto: "⚠️ CONSUMO MODERADO: Contenido medio de azúcar",
+            texto: `✅ BUENA OPCIÓN: Bajo en azúcar (${cucharaditasPor100ml} cucharaditas por medio vaso de 100ml)`,
+            clase: "buena"
+        };
+    } else if (gramosPor100ml <= 10) {
+        return {
+            texto: `⚠️ CONSUMO MODERADO: ${cucharaditasPor100ml} cucharaditas por medio vaso de 100ml`,
             clase: "moderada"
+        };
+    } else if (gramosPor100ml <= 15) {
+        return {
+            texto: `❌ ALTO EN AZÚCAR: ${cucharaditasPor100ml} cucharaditas por medio vaso - equivale al 67% del azúcar diario recomendado`,
+            clase: "alta"
         };
     } else {
         return {
-            texto: "❌ ALTO EN AZÚCAR: Consumir ocasionalmente",
+            texto: `❌ MUY ALTO EN AZÚCAR: ${cucharaditasPor100ml} cucharaditas por medio vaso - supera el azúcar diario recomendado`,
             clase: "alta"
         };
     }
 }
 
-// Función específica para recomendaciones en niños
+// Función específica para recomendaciones en niños - ACTUALIZADA PARA 100ML
 function darRecomendacionNinos(azucarTexto) {
-    const match = azucarTexto.match(/(\d+(?:\.\d+)?)/);
-    if (!match) {
+    // Extraer azúcar por 100ml
+    const gramosPor100ml = extraerAzucarPor100ml(azucarTexto);
+    
+    if (!gramosPor100ml && gramosPor100ml !== 0) {
         return {
             texto: "⚠️ No se pudo evaluar el contenido de azúcar",
             clase: "moderada"
         };
     }
     
-    const gramos = parseFloat(match[1]);
-    const cucharaditas = gramos / 5;
+    const cucharaditasPor100ml = (gramosPor100ml / 5).toFixed(1);
     
-    // Límite recomendado para niños: 15g (3 cucharaditas) al día
-    if (gramos <= 6) {
+    // Límite recomendado para niños: 15g al día (3 cucharaditas)
+    // Evaluamos qué porcentaje del límite diario representa 100ml
+    const porcentajeLimite = ((gramosPor100ml / 15) * 100).toFixed(0);
+    
+    if (gramosPor100ml <= 2.5) {
         return {
-            texto: `✅ EXCELENTE PARA NIÑOS: Solo ${cucharaditas.toFixed(1)} cucharadita(s)`,
+            texto: `✅ EXCELENTE PARA NIÑOS: Solo ${cucharaditasPor100ml} cucharadita(s) por medio vaso (${porcentajeLimite}% del límite diario)`,
             clase: "buena",
-            porcentajeLimite: ((gramos / 15) * 100).toFixed(0)
+            porcentajeLimite: porcentajeLimite
         };
-    } else if (gramos <= 15) {
+    } else if (gramosPor100ml <= 5) {
         return {
-            texto: `⚠️ ACEPTABLE PARA NIÑOS: ${cucharaditas.toFixed(1)} cucharadita(s) - cerca del límite diario`,
+            texto: `✅ BUENO PARA NIÑOS: ${cucharaditasPor100ml} cucharadita(s) por medio vaso (${porcentajeLimite}% del límite diario)`,
+            clase: "buena",
+            porcentajeLimite: porcentajeLimite
+        };
+    } else if (gramosPor100ml <= 10) {
+        return {
+            texto: `⚠️ MODERADO PARA NIÑOS: ${cucharaditasPor100ml} cucharadita(s) por medio vaso (${porcentajeLimite}% del límite diario)`,
             clase: "moderada",
-            porcentajeLimite: ((gramos / 15) * 100).toFixed(0)
+            porcentajeLimite: porcentajeLimite
         };
     } else {
         return {
-            texto: `❌ EXCEDE LÍMITE INFANTIL: ${cucharaditas.toFixed(1)} cucharadita(s) - supera la recomendación diaria`,
+            texto: `❌ ALTO PARA NIÑOS: ${cucharaditasPor100ml} cucharadita(s) por medio vaso (${porcentajeLimite}% del límite diario)`,
             clase: "alta",
-            porcentajeLimite: ((gramos / 15) * 100).toFixed(0)
+            porcentajeLimite: porcentajeLimite
         };
     }
 }
 
-        // Función para mostrar los resultados
-        function mostrarResultado(jugo) {
-            document.getElementById('nombre').textContent = jugo.nombre;
-            document.getElementById('marca').textContent = jugo.marca || '';
-            document.getElementById('azucar').textContent = jugo.azucar;
-            document.getElementById('calorias').textContent = jugo.calorias;
-            document.getElementById('volumen').textContent = jugo.volumen || 'N/A';
-            document.getElementById('tipo').textContent = jugo.tipo || 'Jugo';
-            document.getElementById('ingredientes').textContent = jugo.ingredientes || 'No especificados';
+// Función para mostrar los resultados - ACTUALIZADA
+function mostrarResultado(jugo) {
+    document.getElementById('nombre').textContent = jugo.nombre;
+    document.getElementById('marca').textContent = jugo.marca || '';
+    document.getElementById('azucar').textContent = jugo.azucar;
+    document.getElementById('calorias').textContent = jugo.calorias;
+    document.getElementById('volumen').textContent = jugo.volumen || 'N/A';
+    document.getElementById('tipo').textContent = jugo.tipo || 'Jugo';
+    document.getElementById('ingredientes').textContent = jugo.ingredientes || 'No especificados';
 
-            // Calcular cucharadas
-            const cucharadas = calcularCucharadas(jugo.azucar);
-            document.getElementById('cucharadas').textContent = `${cucharadas} cucharadas`;
+    // Calcular cucharadas POR 100ML
+    const cucharadas = calcularCucharadasPor100ml(jugo.azucar);
+    document.getElementById('cucharadas').textContent = `${cucharadas} cucharadas por 100ml (medio vaso)`;
 
-            // Mostrar recomendación
-            const recomendacion = darRecomendacion(jugo.azucar);
-            const recomendacionEl = document.getElementById('recomendacion');
-            recomendacionEl.textContent = recomendacion.texto;
-            recomendacionEl.className = `recomendacion ${recomendacion.clase}`;
+    // Mostrar recomendación
+    const recomendacion = darRecomendacion(jugo.azucar);
+    const recomendacionEl = document.getElementById('recomendacion');
+    recomendacionEl.textContent = recomendacion.texto;
+    recomendacionEl.className = `recomendacion ${recomendacion.clase}`;
 
-            // Mostrar sección de resultados y ocultar búsqueda
-            document.getElementById('searchSection').style.display = 'none';
-            document.getElementById('resultadoContainer').style.display = 'block';
-        }
+    // Mostrar sección de resultados y ocultar búsqueda
+    document.getElementById('searchSection').style.display = 'none';
+    document.getElementById('resultadoContainer').style.display = 'block';
+}
 
-        // Función para buscar jugo por código
-          // Función para buscar jugo por código - VERSIÓN ARREGLADA
+// Función para buscar jugo por código - VERSIÓN MEJORADA
 async function buscarJugo() {
     const codigo = document.getElementById("codigo").value.trim();
     if (!codigo) {
@@ -516,20 +630,50 @@ async function buscarJugo() {
 
         if (data.status === 1 && data.product) {
             const producto = data.product;
-            // Adaptar los datos de OpenFoodFacts al formato esperado
+            
+            // Obtener volumen del envase
+            const volumenInfo = obtenerVolumenEnMl(producto);
+            
+            // Obtener azúcar por 100ml
+            const azucarPor100ml = producto.nutriments?.sugars_100g || 0;
+            
+            // Calcular azúcar total del envase
+            const azucarTotal = calcularAzucarTotal(azucarPor100ml, volumenInfo.volumen);
+            
+            // Mostrar volumen en formato legible
+            let volumenTexto;
+            if (volumenInfo.volumen >= 1000) {
+                volumenTexto = `${(volumenInfo.volumen / 1000).toFixed(1)}L`;
+            } else {
+                volumenTexto = `${volumenInfo.volumen}ml`;
+            }
+            
+            // Crear texto explicativo del azúcar
+            let azucarTexto;
+            if (azucarTotal && azucarPor100ml > 0) {
+                azucarTexto = `${azucarTotal}g total (${azucarPor100ml}g/100ml)`;
+            } else if (azucarPor100ml > 0) {
+                azucarTexto = `${azucarPor100ml}g/100ml`;
+            } else {
+                azucarTexto = 'No disponible';
+            }
+            
+            // Adaptar los datos
             const jugo = {
                 nombre: producto.product_name || 'Producto sin nombre',
                 marca: producto.brands || '',
-                azucar: producto.nutriments?.sugars_100g ? `${producto.nutriments.sugars_100g}g` : 'No disponible',
-                calorias: producto.nutriments?.['energy-kcal_100g'] ? `${producto.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
-                porcion: producto.serving_size || '100g',
+                azucar: azucarTexto,
+                azucarTotal: azucarTotal || azucarPor100ml, // Para cálculos
+                calorias: producto.nutriments?.['energy-kcal_100g'] ? `${producto.nutriments['energy-kcal_100g']} kcal/100ml` : 'No disponible',
+                volumen: volumenTexto,
                 tipo: producto.categories_tags?.includes('en:beverages') ? 'Bebida' : 'Producto',
                 ingredientes: producto.ingredients_text || 'No especificados'
             };
+            
             mostrarResultado(jugo);
-            // Guardar objeto completo en historialJugosInfo
+            
+            // Guardar en historial
             let historial = JSON.parse(localStorage.getItem('historialJugosInfo')) || [];
-            // Evitar duplicados consecutivos
             if (historial.length === 0 || historial[historial.length-1].nombre !== jugo.nombre) {
                 historial.push(jugo);
                 localStorage.setItem('historialJugosInfo', JSON.stringify(historial));
@@ -543,7 +687,7 @@ async function buscarJugo() {
             document.getElementById('volumen').textContent = '-';
             document.getElementById('tipo').textContent = '-';
             document.getElementById('ingredientes').textContent = '-';
-            document.getElementById('cucharadas').textContent = '- cucharadas';
+            document.getElementById('cucharadas').textContent = '- cucharadas por 100ml (medio vaso)';
             
             const recomendacionEl = document.getElementById('recomendacion');
             recomendacionEl.innerHTML = `
@@ -563,7 +707,7 @@ async function buscarJugo() {
         document.getElementById('volumen').textContent = '-';
         document.getElementById('tipo').textContent = '-';
         document.getElementById('ingredientes').textContent = '-';
-        document.getElementById('cucharadas').textContent = '- cucharadas';
+        document.getElementById('cucharadas').textContent = '- cucharadas por 100ml (medio vaso)';
         
         const recomendacionEl = document.getElementById('recomendacion');
         recomendacionEl.innerHTML = `
@@ -575,8 +719,9 @@ async function buscarJugo() {
         `;
         recomendacionEl.className = 'recomendacion';
     }
-}  
-// Función para escanear otro producto - VERSIÓN ARREGLADA
+}
+
+// Función para escanear otro producto
 function escanearOtro() {
     // Limpiar el input
     document.getElementById('codigo').value = '';
@@ -589,7 +734,7 @@ function escanearOtro() {
     document.getElementById('volumen').textContent = '-';
     document.getElementById('tipo').textContent = '-';
     document.getElementById('ingredientes').textContent = '-';
-    document.getElementById('cucharadas').textContent = '- cucharadas';
+    document.getElementById('cucharadas').textContent = '- cucharadas por 100ml (medio vaso)';
     
     // Limpiar recomendación
     const recomendacionEl = document.getElementById('recomendacion');
@@ -603,6 +748,7 @@ function escanearOtro() {
     // Enfocar el input para facilitar la siguiente búsqueda
     document.getElementById('codigo').focus();
 }
+
 function mostrarComparador() {
     document.getElementById('searchSection').style.display = 'none';
     document.getElementById('resultadoContainer').style.display = 'none';
@@ -639,6 +785,7 @@ async function compararJugos() {
     localStorage.setItem('historialJugosInfo', JSON.stringify(historial));
 }
 
+// Función para obtener jugo - MEJORADA PARA COMPARADOR
 async function obtenerJugo(codigo) {
     try {
         const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${codigo}.json`);
@@ -646,25 +793,69 @@ async function obtenerJugo(codigo) {
         const data = await res.json();
         if (data.status === 1 && data.product) {
             const producto = data.product;
+            
+            // Obtener volumen del envase
+            const volumenInfo = obtenerVolumenEnMl(producto);
+            
+            // Obtener azúcar por 100ml
+            const azucarPor100ml = producto.nutriments?.sugars_100g || 0;
+            
+            // Calcular azúcar total del envase
+            const azucarTotal = calcularAzucarTotal(azucarPor100ml, volumenInfo.volumen);
+            
+            // Mostrar volumen en formato legible
+            let volumenTexto;
+            if (volumenInfo.volumen >= 1000) {
+                volumenTexto = `${(volumenInfo.volumen / 1000).toFixed(1)}L`;
+            } else {
+                volumenTexto = `${volumenInfo.volumen}ml`;
+            }
+            
+            // Crear texto explicativo del azúcar
+            let azucarTexto;
+            if (azucarTotal && azucarPor100ml > 0) {
+                azucarTexto = `${azucarTotal}g total (${azucarPor100ml}g/100ml)`;
+            } else if (azucarPor100ml > 0) {
+                azucarTexto = `${azucarPor100ml}g/100ml`;
+            } else {
+                azucarTexto = 'No disponible';
+            }
+            
             return {
                 nombre: producto.product_name || 'Producto sin nombre',
                 marca: producto.brands || '',
-                azucar: producto.nutriments?.sugars_100g ? `${producto.nutriments.sugars_100g}g` : 'No disponible',
-                calorias: producto.nutriments?.['energy-kcal_100g'] ? `${producto.nutriments['energy-kcal_100g']} kcal` : 'No disponible',
-                volumen: '100g',
+                azucar: azucarTexto,
+                calorias: producto.nutriments?.['energy-kcal_100g'] ? `${producto.nutriments['energy-kcal_100g']} kcal/100ml` : 'No disponible',
+                volumen: volumenTexto,
                 tipo: producto.categories_tags?.includes('en:beverages') ? 'Bebida' : 'Producto',
                 ingredientes: producto.ingredients_text || 'No especificados'
             };
         } else {
-            return { nombre: 'Producto no encontrado', marca: `Código: ${codigo}`, azucar: '-', calorias: '-', volumen: '-', tipo: '-', ingredientes: '-' };
+            return { 
+                nombre: 'Producto no encontrado', 
+                marca: `Código: ${codigo}`, 
+                azucar: '-', 
+                calorias: '-', 
+                volumen: '-', 
+                tipo: '-', 
+                ingredientes: '-' 
+            };
         }
     } catch (error) {
-        return { nombre: 'Error al cargar datos', marca: '', azucar: '-', calorias: '-', volumen: '-', tipo: '-', ingredientes: '-' };
+        return { 
+            nombre: 'Error al cargar datos', 
+            marca: '', 
+            azucar: '-', 
+            calorias: '-', 
+            volumen: '-', 
+            tipo: '-', 
+            ingredientes: '-' 
+        };
     }
 }
 
 function renderJugoComparador(jugo, n) {
-    const cucharadas = calcularCucharadas(jugo.azucar);
+    const cucharadas = calcularCucharadasPor100ml(jugo.azucar);
     const recomendacion = darRecomendacion(jugo.azucar);
     return `
     <div class="producto-header">
@@ -691,7 +882,7 @@ function renderJugoComparador(jugo, n) {
     </div>
     <div class="cucharadas">
         <h3>🥄 Equivalencia en Azúcar</h3>
-        <div class="valor-grande">${cucharadas} cucharadas</div>
+        <div class="valor-grande">${cucharadas} cucharadas por 100ml (medio vaso)</div>
     </div>
     <div class="recomendacion ${recomendacion.clase}">
         ${recomendacion.texto}
@@ -709,7 +900,6 @@ function nuevoComparador() {
     document.getElementById('comparadorSection').style.display = 'block';
     document.getElementById('resultadoComparador').style.display = 'none';
 }
-
     </script>
 </body>
 </html>
